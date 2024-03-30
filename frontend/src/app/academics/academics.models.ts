@@ -62,6 +62,10 @@ export interface Room {
   capacity: number | null;
   reservable: boolean | null;
   seats: Seat[] | null;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
 /** Defines a Roster Role */

@@ -38,6 +38,10 @@ virtual_room = RoomDetails(
     capacity=999,
     reservable=False,
     seats=[],
+    x=0,
+    y=0,
+    width=0,
+    height=0,
 )
 
 comp_101_001 = Section(

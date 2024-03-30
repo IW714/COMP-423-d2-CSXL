@@ -25,6 +25,9 @@ import { ReservationService } from '../reservation/reservation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { Room } from 'src/app/academics/academics.models';
+
 @Component({
   selector: 'app-coworking-home',
   templateUrl: './coworking-home.component.html',
@@ -44,6 +47,8 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   public filteredRoomReservations$!: Observable<Reservation[]>;
 
+  public rooms$: Observable<Room[]>;
+
   /** Route information to be used in App Routing Module */
   public static Route: Route = {
     path: '',
@@ -55,6 +60,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
 
   constructor(
     public coworkingService: CoworkingService,
+    public academicsService: AcademicsService,
     private router: Router,
     private reservationService: ReservationService,
     protected snackBar: MatSnackBar,
@@ -68,6 +74,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
     this.openOperatingHours$ = this.initNextOperatingHours();
     this.isOpen$ = this.initIsOpen();
     this.activeReservation$ = this.initActiveReservation();
+    this.rooms$ = this.academicsService.getRooms();
   }
 
   /**
@@ -166,5 +173,9 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  navigateToRoomSelection(roomId: string) {
+    this.router.navigate(['/selection', roomId]);
   }
 }

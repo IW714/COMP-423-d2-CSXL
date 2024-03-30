@@ -19,6 +19,10 @@ the_xl = RoomDetails(
     capacity=40,
     reservable=False,
     seats=[],
+    x=51,
+    y=72,
+    width=350,
+    height=300,
 )
 
 group_a = RoomDetails(
@@ -29,6 +33,10 @@ group_a = RoomDetails(
     capacity=4,
     reservable=True,
     seats=[],
+    x=500,
+    y=50,
+    width=100,
+    height=75,
 )
 
 group_b = RoomDetails(
@@ -39,6 +47,10 @@ group_b = RoomDetails(
     capacity=4,
     reservable=True,
     seats=[],
+    x=500,
+    y=125,
+    width=100,
+    height=75,
 )
 
 group_c = RoomDetails(
@@ -49,6 +61,38 @@ group_c = RoomDetails(
     capacity=6,
     reservable=True,
     seats=[],
+    x=500,
+    y=235,
+    width=100,
+    height=75,
+)
+
+group_d = RoomDetails(
+    id="SN147",
+    building="Sitterson",
+    room="147",
+    nickname="Group D",
+    capacity=5,
+    reservable=True,
+    seats=[],
+    x=500,
+    y=345,
+    width=100,
+    height=75,
+)
+
+group_e = RoomDetails(
+    id="SN146",
+    building="Sitterson",
+    room="146",
+    nickname="Group E",
+    capacity=5,
+    reservable=True,
+    seats=[],
+    x=350,
+    y=450,
+    width=77,
+    height=72,
 )
 
 pair_a = RoomDetails(
@@ -59,6 +103,24 @@ pair_a = RoomDetails(
     capacity=2,
     reservable=True,
     seats=[],
+    x=500,
+    y=200,
+    width=100,
+    height=35,
+)
+
+pair_b = RoomDetails(
+    id="SN144",
+    building="Sitterson",
+    room="144",
+    nickname="Pair B",
+    capacity=2,
+    reservable=True,
+    seats=[],
+    x=500,
+    y=310,
+    width=100,
+    height=35,
 )
 
 new_room = RoomDetails(
@@ -69,6 +131,10 @@ new_room = RoomDetails(
     capacity=100,
     reservable=False,
     seats=[],
+    x=0,
+    y=0,
+    width=0,
+    height=0,
 )
 
 edited_xl = RoomDetails(
@@ -79,9 +145,13 @@ edited_xl = RoomDetails(
     capacity=100,
     reservable=False,
     seats=[],
+    x=0,
+    y=0,
+    width=0,
+    height=0,
 )
 
-rooms = [the_xl, group_a, group_b, group_c, pair_a]
+rooms = [the_xl, group_a, group_b, group_c, group_d, group_e, pair_a, pair_b]
 
 
 def insert_fake_data(session: Session):

@@ -17,6 +17,10 @@ class RoomDetails(Room):
     capacity: int
     reservable: bool
     seats: list[Seat] = []
+    x: float
+    y: float
+    width: float
+    height: float
 
     def to_room(self) -> Room:
         """Converts the details model to a room model.

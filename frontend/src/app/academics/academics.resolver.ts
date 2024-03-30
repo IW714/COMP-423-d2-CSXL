@@ -143,7 +143,11 @@ export const roomResolver: ResolveFn<Room | undefined> = (route, state) => {
       room: '',
       capacity: 100,
       reservable: false,
-      seats: []
+      seats: [],
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
     };
   }
 

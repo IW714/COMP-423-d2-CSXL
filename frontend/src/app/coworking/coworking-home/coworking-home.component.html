@@ -1,37 +1,50 @@
 <div class="coworking-home-top">
-  <div class="coworking-reservations-grid">
-    <ng-container *ngIf="status$ | async as status">
-      <ng-container
-        *ngIf="openOperatingHours$ | async as openOperatingHours; else closed">
-        <coworking-operating-hours-panel
-          [operatingHours]="status.operating_hours"
-          [openOperatingHours]="openOperatingHours" />
-      </ng-container>
+  <div class="coworking-reservations-flex-box">
+    <div class="coworking-reservations-grid">
+      <ng-container *ngIf="status$ | async as status">
+        <ng-container
+          *ngIf="
+            openOperatingHours$ | async as openOperatingHours;
+            else closed
+          ">
+          <coworking-operating-hours-panel
+            [operatingHours]="status.operating_hours"
+            [openOperatingHours]="openOperatingHours" />
+        </ng-container>
 
-      <ng-container
-        *ngIf="activeReservation$ | async as activeReservation; else dropin">
-        <coworking-reservation-card
-          (updateActiveReservation)="setActiveReservation()"
-          (reloadCoworkingHome)="ngOnInit()"
-          [reservation]="activeReservation"></coworking-reservation-card>
-      </ng-container>
+        <ng-container
+          *ngIf="activeReservation$ | async as activeReservation; else dropin">
+          <coworking-reservation-card
+            (updateActiveReservation)="setActiveReservation()"
+            (reloadCoworkingHome)="ngOnInit()"
+            [reservation]="activeReservation"></coworking-reservation-card>
+        </ng-container>
 
-      <ng-container>
-        <ng-template #dropin>
-          <div class="dropin-card-container">
-            <coworking-dropin-availability-card
-              [seat_availability]="status.seat_availability"
-              (seatsSelected)="reserve($event)" />
-          </div>
+        <ng-container>
+          <ng-template #dropin>
+            <div class="dropin-card-container">
+              <coworking-dropin-availability-card
+                [seat_availability]="status.seat_availability"
+                (seatsSelected)="reserve($event)" />
+            </div>
+          </ng-template>
+        </ng-container>
+
+        <ng-template #closed>
+          <coworking-operating-hours-panel
+            [operatingHours]="status.operating_hours" />
         </ng-template>
       </ng-container>
-
-      <ng-template #closed>
-        <coworking-operating-hours-panel
-          [operatingHours]="status.operating_hours" />
-      </ng-template>
-    </ng-container>
+    </div>
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <room-map
+          [rooms]="rooms$ | async"
+          (roomPressed)="navigateToRoomSelection($event)"></room-map>
+      </mat-card-content>
+    </mat-card>
   </div>
+
   <br />
   <div class="coworking-reservations-grid">
     <mat-card appearance="outlined">

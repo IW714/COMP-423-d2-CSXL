@@ -1,6 +1,6 @@
 """Entity for Room."""
 
-from sqlalchemy import Integer, String, Boolean
+from sqlalchemy import Integer, String, Boolean, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.coworking import SeatEntity
@@ -26,6 +26,10 @@ class RoomEntity(EntityBase):
     room: Mapped[str] = mapped_column(String)
     nickname: Mapped[str] = mapped_column(String)
     reservable: Mapped[bool] = mapped_column(Boolean)
+    x: Mapped[float] = mapped_column(Float)
+    y: Mapped[float] = mapped_column(Float)
+    width: Mapped[float] = mapped_column(Float)
+    height: Mapped[float] = mapped_column(Float)
 
     seats: Mapped[list["SeatEntity"]] = relationship(  # type: ignore
         "SeatEntity", back_populates="room"
@@ -55,6 +59,10 @@ class RoomEntity(EntityBase):
             capacity=self.capacity,
             reservable=self.reservable,
             seats=[seat.to_model() for seat in self.seats],
+            x=self.x,
+            y=self.y,
+            width=self.width,
+            height=self.height,
         )
 
     @classmethod
@@ -73,4 +81,8 @@ class RoomEntity(EntityBase):
             room=model.room,
             capacity=model.capacity,
             reservable=model.reservable,
+            x=model.x,
+            y=model.y,
+            width=model.width,
+            height=model.height,
         )

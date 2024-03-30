@@ -1,0 +1,26 @@
+<div class="container">
+  <svg width="700" height="600">
+    <g *ngFor="let room of rooms">
+      <rect
+        [attr.x]="room.x"
+        [attr.y]="room.y"
+        [attr.width]="room.width"
+        [attr.height]="room.height"
+        fill="#4686C6"
+        opacity="0.75"
+        stroke="black"
+        (click)="roomPressed.emit(room.id)" />
+      <text
+        *ngIf="room.id !== '404'"
+        [attr.x]="room.x + room.width / 2"
+        [attr.y]="room.y + room.height / 2"
+        text-anchor="middle"
+        alignment-baseline="central"
+        (click)="roomPressed.emit(room.id)"
+        style="font-family: Roboto, 'Helvetica Neue', sans-serif"
+        fill="white">
+        {{ room.id }}
+      </text>
+    </g>
+  </svg>
+</div>

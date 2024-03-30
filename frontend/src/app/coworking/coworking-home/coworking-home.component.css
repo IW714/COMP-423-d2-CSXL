@@ -11,6 +11,13 @@
   padding-top: 24px;
 }
 
+.coworking-reservations-flex-box {
+  display: flex;
+  flex-direction: row; /* Ensures children are laid out in a row */
+  width: 100%; /* Fill the available width */
+  overflow-x: auto; /* Allows horizontal scrolling if content overflows */
+}
+
 .coworking-reservations-grid {
   display: grid;
   padding: 0px 24px 0px 24px !important;
@@ -217,4 +224,9 @@ a {
 
 .reservation-link {
   flex: 1;
+}
+
+.room-map {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
 }
