@@ -22,8 +22,8 @@ monitor_seat_00 = SeatDetails(
     reservable=True,
     has_monitor=True,
     sit_stand=True,
-    x=0,
-    y=0,
+    x=10,
+    y=10,
     room=the_xl.to_room(),
 )
 
@@ -31,13 +31,14 @@ monitor_seat_01: Seat = SeatDetails(
     id=2,
     title="Standing Monitor 01",
     shorthand="M01",
-    reservable=False,
+    reservable=True,
     has_monitor=True,
     sit_stand=True,
-    x=0,
-    y=1,
+    x=30,
+    y=10,
     room=the_xl.to_room(),
 )
+
 monitor_seat_10 = SeatDetails(
     id=3,
     title="Monitor 10",
@@ -45,10 +46,11 @@ monitor_seat_10 = SeatDetails(
     reservable=True,
     has_monitor=True,
     sit_stand=False,
-    x=1,
-    y=0,
+    x=10,
+    y=50,
     room=the_xl.to_room(),
 )
+
 monitor_seat_11 = SeatDetails(
     id=4,
     title="Monitor 11",
@@ -56,11 +58,70 @@ monitor_seat_11 = SeatDetails(
     reservable=False,
     has_monitor=True,
     sit_stand=False,
-    x=1,
-    y=1,
+    x=30,
+    y=50,
     room=the_xl.to_room(),
 )
-monitor_seats = [monitor_seat_00, monitor_seat_01, monitor_seat_10, monitor_seat_11]
+
+monitor_seat_100 = SeatDetails(
+    id=5,
+    title="Standing Monitor 100",
+    shorthand="M100",
+    reservable=True,
+    has_monitor=True,
+    sit_stand=True,
+    x=50,
+    y=10,
+    room=the_xl.to_room(),
+)
+
+monitor_seat_101: Seat = SeatDetails(
+    id=6,
+    title="Standing Monitor 101",
+    shorthand="M101",
+    reservable=False,
+    has_monitor=True,
+    sit_stand=True,
+    x=70,
+    y=10,
+    room=the_xl.to_room(),
+)
+
+monitor_seat_110 = SeatDetails(
+    id=7,
+    title="Monitor 110",
+    shorthand="M110",
+    reservable=False,
+    has_monitor=True,
+    sit_stand=False,
+    x=50,
+    y=50,
+    room=the_xl.to_room(),
+)
+
+monitor_seat_111 = SeatDetails(
+    id=8,
+    title="Monitor 111",
+    shorthand="M111",
+    reservable=False,
+    has_monitor=True,
+    sit_stand=False,
+    x=70,
+    y=50,
+    room=the_xl.to_room(),
+)
+
+
+monitor_seats = [
+    monitor_seat_00,
+    monitor_seat_01,
+    monitor_seat_10,
+    monitor_seat_11,
+    monitor_seat_100,
+    monitor_seat_101,
+    monitor_seat_110,
+    monitor_seat_111,
+]
 
 # common_area_00 = SeatDetails(
 #     id=20,

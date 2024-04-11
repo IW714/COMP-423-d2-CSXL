@@ -2,6 +2,8 @@
 
 import pytest
 from sqlalchemy.orm import Session
+
+from backend.models.coworking.seat import Seat
 from ...entities import RoomEntity
 from ...models import RoomDetails
 from .reset_table_id_seq import reset_table_id_seq

@@ -1,5 +1,5 @@
 <div class="container">
-  <svg width="700" height="600">
+  <svg width="700" height="525">
     <g *ngFor="let room of rooms">
       <rect
         [attr.x]="room.x"
@@ -13,9 +13,8 @@
       <text
         *ngIf="room.id !== '404'"
         [attr.x]="room.x + room.width / 2"
-        [attr.y]="room.y + room.height / 2"
+        [attr.y]="room.y + room.height / 2 + 5"
         text-anchor="middle"
-        alignment-baseline="central"
         (click)="roomPressed.emit(room.id)"
         style="font-family: Roboto, 'Helvetica Neue', sans-serif"
         fill="white">

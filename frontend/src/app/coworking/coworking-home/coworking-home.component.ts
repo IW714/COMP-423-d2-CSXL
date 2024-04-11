@@ -178,4 +178,9 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   navigateToRoomSelection(roomId: string) {
     this.router.navigate(['/selection', roomId]);
   }
+
+  reloadPage() {
+    this.ngOnDestroy();
+    this.ngOnInit();
+  }
 }

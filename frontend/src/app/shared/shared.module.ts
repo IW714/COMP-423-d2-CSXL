@@ -31,6 +31,7 @@ import { CommunityAgreement } from './community-agreement/community-agreement.wi
 
 import { UserChipList } from './user-chip-list/user-chip-list.widget';
 import { RoomMap } from './room-map/room-map.widget';
+import { SeatingChart } from './seating-chart/seating-chart.widget';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { RoomMap } from './room-map/room-map.widget';
     UserLookup,
     UserChipList,
     CommunityAgreement,
-    RoomMap
+    RoomMap,
+    SeatingChart
   ],
   imports: [
     CommonModule,
@@ -71,7 +73,8 @@ import { RoomMap } from './room-map/room-map.widget';
     EventList,
     UserLookup,
     UserChipList,
-    RoomMap
+    RoomMap,
+    SeatingChart
   ]
 })
 export class SharedModule {}

@@ -40,6 +40,20 @@ p {
   margin: 0.5em;
 }
 
+.seats-container {
+  display: flex; /* Use Flexbox */
+}
+
+.seats-label {
+  display: inline; /* Display the label inline */
+}
+
+.seat-list-inline {
+  list-style-type: none; /* Removes bullet points */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Adjust or remove default margin as needed */
+}
+
 @media only screen and (max-device-width: 730px) {
   h3 > * {
     font-size: 0.8em;
@@ -50,4 +64,8 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: center; /* This ensures vertical alignment if needed */
+}
+
+mat-card {
+  width: 500px;
 }

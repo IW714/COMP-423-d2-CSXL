@@ -32,7 +32,7 @@ from .policy import PolicyService
 from .operating_hours import OperatingHoursService
 from ..permission import PermissionService
 
-__authors__ = ["Kris Jordan", "Matt Vu","Yuvraj Jain"]
+__authors__ = ["Kris Jordan", "Matt Vu", "Yuvraj Jain"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
@@ -272,7 +272,7 @@ class ReservationService:
         """
         reserved_date_map: dict[str, list[int]] = {}
 
-        # Query DB to get reservable rooms. 
+        # Query DB to get reservable rooms.
         rooms = self._get_reservable_rooms()
 
         # Generate a 1 day time range to get operating hours on date.
@@ -302,9 +302,7 @@ class ReservationService:
             self._round_to_closest_half_hour(
                 operating_hours_on_date.start, round_up=True
             ),
-            self._round_to_closest_half_hour(
-                datetime.now(), round_up=False
-            )
+            self._round_to_closest_half_hour(datetime.now(), round_up=False),
         )
         operating_hours_end = self._round_to_closest_half_hour(
             operating_hours_on_date.end, round_up=False
@@ -324,14 +322,16 @@ class ReservationService:
             time_slots_for_room = [0] * operating_hours_duration
 
             # # Making slots up till current time gray
-            # This code no longer required, but may be required in the future. 
+            # This code no longer required, but may be required in the future.
             # Please keep this here for now.
             # if date.date() == current_time.date():
             #     for i in range(0, current_time_idx):
             #         time_slots_for_room[i] = RoomState.UNAVAILABLE.value
 
             if room.id == "SN156":
-                reservations = self._query_xl_reservations_by_date_for_user(date, subject)
+                reservations = self._query_xl_reservations_by_date_for_user(
+                    date, subject
+                )
             else:
                 reservations = self._query_confirmed_reservations_by_date_and_room(
                     date, room.id
@@ -530,7 +530,7 @@ class ReservationService:
                     [ReservationState.CANCELLED, ReservationState.CHECKED_OUT]
                 ),
                 ReservationEntity.room == None,
-                UserEntity.id == subject.id
+                UserEntity.id == subject.id,
             )
             .order_by(ReservationEntity.start)
             .all()
@@ -552,7 +552,7 @@ class ReservationService:
         """
         rooms = (
             self._session.query(RoomEntity)
-            .where(or_(RoomEntity.reservable == True, RoomEntity.id == 'SN156'))
+            .where(or_(RoomEntity.reservable == True, RoomEntity.id == "SN156"))
             .order_by(RoomEntity.id)
             .all()
         )
@@ -859,7 +859,11 @@ class ReservationService:
             # Here we constrain the reservation start/end to that of the best available seat requested.
             # This matters as walk-in availability becomes scarce (may start in the near future even though request
             # start is for right now), alternatively may end early due to reserved seat on backend.
-            seat_entities = [self._session.get(SeatEntity, seat_availability[0].id)]
+            seat_entities = [
+                self._session.get(SeatEntity, seat_avail.id)
+                for seat_avail in seat_availability
+                if seat_avail.reservable
+            ]
             bounds = seat_availability[0].availability[0]
         else:
             seat_entities = []

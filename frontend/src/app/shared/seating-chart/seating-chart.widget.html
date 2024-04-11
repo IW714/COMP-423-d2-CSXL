@@ -1,0 +1,27 @@
+<div class="container" *ngIf="room">
+  <svg
+    class="scale-svg"
+    [attr.viewBox]="'0 0 ' + (room.width + 10) + ' ' + (room.height + 10)">
+    <g>
+      <rect
+        [attr.x]="5"
+        [attr.y]="5"
+        [attr.width]="room.width"
+        [attr.height]="room.height"
+        fill="white"
+        stroke="black"
+        stroke-width="2"
+        rx="5"
+        ry="5"></rect>
+    </g>
+    <g *ngFor="let seat of seat_availability">
+      <image
+        [attr.x]="seat.x"
+        [attr.y]="seat.y"
+        width="20"
+        height="20"
+        [attr.href]="getImagePath(seat)"
+        (click)="seatClicked(seat)"></image>
+    </g>
+  </svg>
+</div>

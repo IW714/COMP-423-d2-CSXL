@@ -9,13 +9,14 @@
 .coworking-home-top {
   padding-bottom: 24px;
   padding-top: 24px;
+  position: relative;
 }
 
 .coworking-reservations-flex-box {
   display: flex;
-  flex-direction: row; /* Ensures children are laid out in a row */
-  width: 100%; /* Fill the available width */
-  overflow-x: auto; /* Allows horizontal scrolling if content overflows */
+  flex-direction: row; /* Will place child elements side by side */
+  align-items: flex-start; /* Align items to the start of the flex container vertically */
+  width: 100%;
 }
 
 .coworking-reservations-grid {
@@ -25,6 +26,7 @@
   /* grid-template-rows: 0fr 2fr; <-- UNCOMMENT */
   row-gap: 15px;
   column-gap: 15px;
+  height: fit-content;
 }
 
 .coworking-reservations-grid {
@@ -60,6 +62,11 @@
     padding-top: 20px;
   }
 
+  /* haven't tested on mobile yet */
+  .coworking-reservations-flex-box {
+    flex-direction: column;
+  }
+
   .coworking-reservations-grid {
     display: grid;
     box-sizing: border-box; /* This ensures padding is included in the width */
@@ -78,7 +85,7 @@
   .reservation-card {
     padding: 4px 16px 4px 16px !important;
     box-sizing: border-box;
-    max-width: 348px; /* Max width as per the other element */
+    width: 200px; /* Max width as per the other element */
     /* max-height: 321px; Max height as per the other element */
     /* ... other necessary styles ... */
   }
@@ -89,6 +96,39 @@
 
   .upcoming-card-container {
     order: 3;
+  }
+}
+
+@media (max-width: 1300px) {
+  .coworking-reservations-flex-box {
+    flex-direction: column;
+  }
+
+  .coworking-home-top {
+    padding-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .coworking-reservations-flex-box {
+    flex-direction: column;
+  }
+
+  .coworking-reservations-grid:first-child {
+    order: 2; /* This assumes that the first grid should go second */
+  }
+
+  .coworking-reservations-grid:last-child {
+    order: 1; /* This assumes that the second grid should go first */
+  }
+
+  .upcoming-card-container {
+    max-height: 1000px;
+    width: 100%;
+    overflow-y: hidden;
+  }
+  
+  .room-map {
+    min-width: 300px;
   }
 }
 
@@ -210,23 +250,31 @@ mat-checkbox {
   flex: 1;
 }
 
-.bolded {
-  font-weight: 500;
-}
-
 a {
   text-decoration: none;
 }
 
 .reservation-card {
-  padding: 8px 16px 8px 16px; /* Top padding is now the same as sides and bottom */
+  margin-top: 10px;
 }
 
 .reservation-link {
   flex: 1;
 }
 
-.room-map {
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
+.room-map-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.upcoming-card-container {
+  height: fit-content;
+  overflow-y: auto;
+}
+
+.room-map mat-card {
+  height: 550px;
 }

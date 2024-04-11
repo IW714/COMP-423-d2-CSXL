@@ -1,0 +1,89 @@
+.seat-selection-flex-box {
+    display: flex;
+    flex-direction: row; /* Ensures children are laid out in a row */
+    width: 100%; /* Fill the available width */
+    min-width: 640px;
+  }
+
+  .seat-selection-card-container {
+    min-width: 640px;
+  } 
+  
+  .seating-chart-container {
+    flex: 1;
+    min-width: 540px;
+  }
+  
+.mat-card-title {
+  padding: 15px;
+  font-size: 18px;
+  padding-bottom: 10px;
+}
+
+.mat-card-content {
+  font-weight: bold; /* Makes the text bold */
+  font-size: 20px;
+  padding: 15px;
+  padding-bottom: 10px;
+}
+
+.seats-container {
+    display: flex; /* Use Flexbox */
+}
+
+.seats-label {
+    display: inline; /* Display the label inline */
+    margin-right: 10px; /* Adjust spacing between the label and the list */
+}
+  
+.seat-list-inline {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Adjust or remove default margin as needed */
+}
+  
+.divider {
+  margin: 0 15px; /* Adjusts the space on the sides of the divider */
+}
+
+.mat-card-button {
+  position: absolute;
+  bottom: 10px; /* Adjust padding from the bottom */
+  right: 10px; /* Adjust padding from the right */
+  border: 1px solid #ccc; /* Adjust border color and thickness as needed */
+  padding: 5px 10px; /* Adjust padding inside the button */
+}
+
+.mat-card-bottom {
+  margin-top: 37px;
+}
+
+@media (max-width: 1400px) {
+
+  .seat-selection-flex-box {
+    display: flex;
+    flex-direction: row; /* Ensures children are laid out in a row */
+    width: 100%; /* Fill the available width */
+    min-width: 0;
+  }
+
+  .seat-selection-card-container {
+    min-width: 0;
+  } 
+  
+  .seating-chart-container {
+    min-width: 0;
+  }
+
+    .seat-selection-flex-box {
+      flex-direction: column;
+    }
+
+    seat-selection-card-container {
+      min-width: none;
+    } 
+  
+    .seating-chart {
+      padding: 24px 24px 0px 24px !important;
+    }
+  }

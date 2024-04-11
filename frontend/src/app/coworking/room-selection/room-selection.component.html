@@ -1,1 +1,56 @@
-<p>room-selection works!</p>
+<div class="seat-selection-flex-box">
+  <div class="seat-selection-card-container">
+    <mat-card class="seat-selection-card" appearance="outlined">
+      <mat-card-title class="mat-card-title">Seats Selection</mat-card-title>
+      <mat-divider class="divider"></mat-divider>
+      <mat-card-content class="mat-card-content">
+        <div class="seats-container">
+          <div class="seats-label">Seat(s)</div>
+          <ul class="seat-list-inline">
+            <li *ngFor="let seat of selectedSeats">{{ seat.title }}</li>
+          </ul>
+        </div>
+      </mat-card-content>
+      <mat-divider class="divider"></mat-divider>
+      <mat-card-content class="mat-card-bottom">
+        <button
+          mat-button
+          class="mat-card-button"
+          (click)="reserve(selectedSeats)">
+          Reserve
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="seating-chart-container">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <ng-container
+          *ngIf="
+            (adminPermission$ | async) || (ambassadorPermission$ | async);
+            else elseBlock
+          ">
+          <ng-container *ngIf="status$ | async as status">
+            <ng-container *ngIf="room as room">
+              <seating-chart
+                [room]="room"
+                [seat_availability]="status.seat_availability"
+                (seatsSelected)="seatsSelected($event)"></seating-chart>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-template #elseBlock>
+          <ng-container *ngIf="status$ | async as status">
+            <ng-container *ngIf="room as room">
+              <seating-chart
+                [room]="room"
+                [seat_availability]="status.seat_availability"
+                [selection_limit]="2"
+                (seatsSelected)="seatsSelected($event)"></seating-chart>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
