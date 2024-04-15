@@ -4,7 +4,7 @@ from fastapi import Depends
 from datetime import datetime, timedelta
 from random import random
 from typing import Sequence
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from sqlalchemy.orm import Session, joinedload
 from backend.entities.room_entity import RoomEntity
 
@@ -342,10 +342,6 @@ class ReservationService:
                 )
                 end_idx = self._idx_calculation(reservation.end, operating_hours_start)
 
-                if start_idx < 0 or end_idx > operating_hours_duration:
-                    continue
-
-                # Gray out previous time slots for today only
                 if date.date() == current_time.date():
                     if end_idx < current_time_idx:
                         continue
@@ -399,7 +395,7 @@ class ReservationService:
                 to_add = timedelta(minutes=(60 - minutes))
             rounded_dt = dt + to_add
         else:
-            if minutes > 30:
+            if minutes >= 30:
                 to_subtract = timedelta(minutes=(minutes - 30))
             else:
                 to_subtract = timedelta(minutes=minutes)
@@ -468,6 +464,8 @@ class ReservationService:
         """
         office_hours = self._policy_svc.office_hours(date=date)
         for room_id, hours in office_hours.items():
+            if room_id not in reserved_date_map:
+                continue
             for start, end in hours:
                 start_idx = max(self._idx_calculation(start, operating_hours_start), 0)
                 end_idx = min(
@@ -838,7 +836,7 @@ class ReservationService:
         #             )
 
         # Look at the seats - match bounds of assigned seat's availability
-        # TODO: Fetch all seats
+        seat_entities = []
         if request.room is None:
             seats: list[Seat] = SeatEntity.get_models_from_identities(
                 self._session, request.seats
@@ -866,9 +864,10 @@ class ReservationService:
             ]
             bounds = seat_availability[0].availability[0]
         else:
-            seat_entities = []
-
-        room_id = request.room.id if request.room else None
+            # Prevent double booking a room
+            conflicts = self._fetch_conflicting_room_reservations(request)
+            if len(conflicts) > 0:
+                raise ReservationException("The requested room is no longer available.")
 
         draft = ReservationEntity(
             state=ReservationState.DRAFT,
@@ -876,7 +875,7 @@ class ReservationService:
             end=bounds.end,
             users=user_entities,
             walkin=is_walkin,
-            room_id=room_id,
+            room_id=request.room.id if request.room else None,
             seats=seat_entities,
         )
 
@@ -1043,7 +1042,7 @@ class ReservationService:
             self._session.query(ReservationEntity)
             .join(ReservationEntity.users)
             .filter(
-                ReservationEntity.start >= now - timedelta(minutes=10),
+                ReservationEntity.end > now,
                 ReservationEntity.state.in_(
                     (
                         ReservationState.CONFIRMED,
@@ -1153,3 +1152,26 @@ class ReservationService:
             if len(seat.availability) > 0:
                 available_seats.append(seat)
         return available_seats
+
+    def _fetch_conflicting_room_reservations(
+        self, request: ReservationRequest
+    ) -> list[ReservationEntity]:
+        """Given a ReservationRequest, return a list of conflicting reservation entities, if any."""
+        return (
+            self._session.query(ReservationEntity)
+            .filter(
+                and_(
+                    ReservationEntity.start < request.end,
+                    ReservationEntity.end > request.start,
+                ),
+                ReservationEntity.state.in_(
+                    (
+                        ReservationState.DRAFT,
+                        ReservationState.CONFIRMED,
+                        ReservationState.CHECKED_IN,
+                    )
+                ),
+                ReservationEntity.room_id == request.room.id,
+            )
+            .all()
+        )
