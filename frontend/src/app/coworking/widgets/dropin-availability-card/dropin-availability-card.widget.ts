@@ -106,10 +106,23 @@ export class CoworkingDropInCard implements OnChanges {
   }
 
   reserve(category: SeatCategory): void {
-    this.seatsSelected.emit([
-      ...category.seats_available_now,
-      ...category.seats_available_soon
-    ]);
+    const reservableNow = category.seats_available_now.filter(
+      (seat) => seat.reservable
+    );
+    const reservableSoon = category.seats_available_soon.filter(
+      (seat) => seat.reservable
+    );
+
+    let seatToEmit: SeatAvailability[] = [];
+    if (reservableNow.length > 0) {
+      seatToEmit = [reservableNow[0]];
+    } else if (reservableSoon.length > 0) {
+      seatToEmit = [reservableSoon[0]];
+    } else {
+      console.log('No reservable seats to emit, emitting empty array');
+    }
+
+    this.seatsSelected.emit(seatToEmit);
   }
 
   private initCategories(): SeatCategory[] {
