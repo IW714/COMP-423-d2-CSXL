@@ -100,6 +100,7 @@ export class RoomSelectionComponent implements OnInit {
     this.coworkingService.draftReservation(seatSelection).subscribe({
       error: (error) => {
         this.snackBar.open(error.error.message, '', { duration: 3000 });
+        this.coworkingService.pollStatus();
         console.log(error);
       },
       next: (reservation) => {
