@@ -95,7 +95,9 @@ def instantiate_global_models(time: dict[str, datetime]):
         room=None,
         state=ReservationState.CONFIRMED,
         users=[user_data.root, user_data.ambassador],
-        seats=[seat_data.reservable_seats[0], seat_data.reservable_seats[1]],
+        # seats=[seat_data.reservable_seats[0], seat_data.reservable_seats[1]],
+        # Used to hard code the reserable seats, now had all reservable seats.
+        seats = seat_data.reservable_seats
     )
 
     # Draft future reservation
