@@ -101,6 +101,7 @@ export class RoomSelectionComponent implements OnInit {
       error: (error) => {
         this.snackBar.open(error.error.message, '', { duration: 3000 });
         this.coworkingService.pollStatus();
+        this.selectedSeats = [];
         console.log(error);
       },
       next: (reservation) => {
