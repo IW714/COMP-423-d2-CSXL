@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -6,17 +6,19 @@ import {
   Route,
   Router
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, take, timer } from 'rxjs';
 import { Room } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { CoworkingStatus, Seat, SeatAvailability } from '../coworking.models';
 import { roomResolver } from 'src/app/academics/academics.resolver';
-import { Profile } from 'src/app/profile/profile.service';
+import { Profile, PublicProfile } from 'src/app/profile/profile.service';
 import { CoworkingService } from '../coworking.service';
 import { PermissionService } from 'src/app/permission.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AmbassadorXlService } from '../ambassador-home/ambassador-xl/ambassador-xl.service';
+import { Location } from '@angular/common';
 
 /** Injects the room's name to adjust the title. */
 let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
@@ -38,6 +40,8 @@ export class RoomSelectionComponent implements OnInit {
   public status$: Observable<CoworkingStatus>;
   public adminPermission$: Observable<boolean>;
   public ambassadorPermission$: Observable<boolean>;
+  public ambassadorUsers?: PublicProfile[];
+  public update: Boolean = false;
 
   /* needs to be amended with what is in organization-details component in order to display the room name in the title */
 
@@ -45,7 +49,10 @@ export class RoomSelectionComponent implements OnInit {
     path: 'selection/:id',
     component: RoomSelectionComponent,
     canActivate: [isAuthenticated],
-    resolve: { profile: profileResolver, room: roomResolver },
+    resolve: {
+      profile: profileResolver,
+      room: roomResolver
+    },
     children: [
       {
         path: '',
@@ -61,7 +68,9 @@ export class RoomSelectionComponent implements OnInit {
     private router: Router,
     private coworkingService: CoworkingService,
     private permissionService: PermissionService,
-    private snackBar: MatSnackBar
+    private ambassadorService: AmbassadorXlService,
+    private snackBar: MatSnackBar,
+    private location: Location
   ) {
     const data = this.route.snapshot.data as {
       profile: Profile;
@@ -79,17 +88,20 @@ export class RoomSelectionComponent implements OnInit {
       'coworking.reservation.*',
       '*'
     );
+
+    let state: any = location.getState();
+    this.ambassadorUsers = state.users;
+    console.log(this.ambassadorUsers);
   }
 
   ngOnInit(): void {
     this.status$ = this.coworkingService.status$;
     this.coworkingService.pollStatus();
-    console.log(this.room);
   }
 
   seatsSelected(seats: SeatAvailability[]): void {
+    this.coworkingService.pollStatus();
     this.selectedSeats = seats;
-    console.log(seats);
   }
 
   navigateToNewReservation() {
@@ -97,16 +109,48 @@ export class RoomSelectionComponent implements OnInit {
   }
 
   reserve(seatSelection: SeatAvailability[]) {
+    if (this.ambassadorUsers) {
+      this.ambassadorService
+        .makeDropinReservation(seatSelection, this.ambassadorUsers)
+        .subscribe({
+          next: (reservation) => {
+            this.snackBar.open(
+              `Walk-in reservation made for ${reservation.users[0].first_name} ${reservation.users[0].last_name}!`,
+              'Close',
+              { duration: 3000 }
+            );
+            this.coworkingService.pollStatus();
+            this.selectedSeats = [];
+            this.updateWidget();
+            this.router.navigate(['/coworking/ambassador']);
+          },
+          error: (e) => {
+            this.snackBar.open(e.error.message, '', {
+              duration: 3000
+            });
+          }
+        });
+      return;
+    }
     this.coworkingService.draftReservation(seatSelection).subscribe({
       error: (error) => {
         this.snackBar.open(error.error.message, '', { duration: 3000 });
-        this.coworkingService.pollStatus();
         this.selectedSeats = [];
-        console.log(error);
+        this.updateWidget();
       },
       next: (reservation) => {
         this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
       }
     });
+  }
+
+  updateWidget() {
+    this.update = true;
+    timer(50, 100)
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.update = false;
+        this.coworkingService.pollStatus();
+      });
   }
 }

@@ -21,6 +21,10 @@ export class AmbassadorPageComponent implements OnInit {
       path: '/coworking/ambassador/xl',
       default: true
     },
+    {
+      label: 'XL Map View',
+      path: '/coworking/ambassador/map'
+    },
     { label: 'Room Reservations', path: '/coworking/ambassador/room' }
   ];
 

@@ -41,6 +41,7 @@ import { AboutComponent } from './about/about.component';
 import { GateComponent } from './gate/gate.component';
 import { ProfileEditorComponent } from './profile/profile-editor/profile-editor.component';
 import { SharedModule } from './shared/shared.module';
+import { AmbassadorMapComponent } from './coworking/ambassador-home/ambassador-map/ambassador-map.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { SharedModule } from './shared/shared.module';
     ErrorDialogComponent,
     HomeComponent,
     AboutComponent,
-    GateComponent
+    GateComponent,
+    AmbassadorMapComponent
   ],
   imports: [
     /* Angular */

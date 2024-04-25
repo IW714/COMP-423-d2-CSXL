@@ -14,6 +14,7 @@
       <mat-divider class="divider"></mat-divider>
       <mat-card-content class="mat-card-bottom">
         <button
+          *ngIf="selectedSeats.length > 0"
           mat-button
           class="mat-card-button"
           (click)="reserve(selectedSeats)">
@@ -35,6 +36,7 @@
               <seating-chart
                 [room]="room"
                 [seat_availability]="status.seat_availability"
+                [update_selected_seats]="selectedSeats"
                 (seatsSelected)="seatsSelected($event)"></seating-chart>
             </ng-container>
           </ng-container>

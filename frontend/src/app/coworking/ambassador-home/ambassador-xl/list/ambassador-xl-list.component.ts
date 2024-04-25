@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Route } from '@angular/router';
+import { Route, Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { Observable, Subscription, map, tap, timer } from 'rxjs';
@@ -11,6 +11,8 @@ import {
 import { AmbassadorXlService } from '../ambassador-xl.service';
 import { PublicProfile } from 'src/app/profile/profile.service';
 import { CoworkingService } from '../../../coworking.service';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { Room } from 'src/app/academics/academics.models';
 
 const FIVE_SECONDS = 5 * 1000;
 
@@ -38,11 +40,15 @@ export class AmbassadorXlListComponent implements OnDestroy, OnInit {
 
   columnsToDisplay = ['id', 'name', 'seat', 'start', 'end', 'actions'];
 
+  rooms$: Observable<Room[]>;
+
   private refreshSubscription!: Subscription;
 
   constructor(
     public ambassadorService: AmbassadorXlService,
-    public coworkingService: CoworkingService
+    private coworkingService: CoworkingService,
+    private academicsService: AcademicsService,
+    private router: Router
   ) {
     this.reservations$ = this.ambassadorService.reservations$;
     this.upcomingReservations$ = this.reservations$.pipe(
@@ -55,6 +61,7 @@ export class AmbassadorXlListComponent implements OnDestroy, OnInit {
     );
 
     this.status$ = coworkingService.status$;
+    this.rooms$ = academicsService.getRooms();
   }
 
   beginReservationRefresh(): void {
@@ -78,6 +85,12 @@ export class AmbassadorXlListComponent implements OnDestroy, OnInit {
     if (users.length > 0) {
       this.coworkingService.pollStatus();
     }
+  }
+
+  navigateToRoomSelection(roomID: string) {
+    this.router.navigate(['/selection', roomID], {
+      state: { users: this.welcomeDeskReservationSelection }
+    });
   }
 
   onWalkinSeatSelection(seatSelection: SeatAvailability[]) {

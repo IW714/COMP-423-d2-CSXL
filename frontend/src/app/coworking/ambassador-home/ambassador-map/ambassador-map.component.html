@@ -1,0 +1,84 @@
+<div class="seat-selection-flex-box">
+  <div class="seat-selection-card-container">
+    <mat-card class="seat-selection-card" appearance="outlined">
+      <mat-card-title class="mat-card-title">Seat Selection</mat-card-title>
+      <mat-divider class="divider"></mat-divider>
+      <mat-card-content class="mat-card-content">
+        <div class="seats-container">
+          <div class="seats-label">Seat(s)</div>
+          <ul
+            class="seat-list-inline"
+            *ngIf="reservation && reservation.length > 0">
+            <li *ngFor="let seat of reservation[0].seats">{{ seat.title }}</li>
+          </ul>
+        </div>
+      </mat-card-content>
+      <mat-divider class="divider"></mat-divider>
+      <mat-card-content class="mat-card-content">
+        <div class="seats-container">
+          <div class="seats-label">Student</div>
+          <ul
+            class="seat-list-inline"
+            *ngIf="reservation && reservation.length > 0">
+            <li>
+              {{ reservation[0].users[0].first_name }}
+              {{ reservation[0].users[0].last_name }}
+            </li>
+          </ul>
+        </div>
+      </mat-card-content>
+      <mat-divider class="divider"></mat-divider>
+      <mat-card-content class="mat-card-bottom">
+        <ng-container *ngIf="reservation && reservation.length > 0">
+          <button
+            *ngIf="reservation[0].state === 'CONFIRMED'"
+            mat-button
+            class="second-button"
+            (click)="cancel(reservation[0])">
+            Cancel
+          </button>
+          <button
+            *ngIf="reservation[0].state === 'CONFIRMED'"
+            mat-button
+            class="mat-card-button"
+            (click)="checkIn(reservation[0])">
+            Check In
+          </button>
+          <button
+            *ngIf="reservation[0].state === 'CHECKED_IN'"
+            mat-button
+            class="mat-card-button"
+            (click)="checkOut(reservation[0])">
+            Check Out
+          </button>
+        </ng-container>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="seating-chart-container">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <ng-container *ngIf="status$ | async as status">
+          <ng-container *ngIf="XL">
+            <seating-chart
+              [room]="XL"
+              [seat_availability]="status.seat_availability"
+              [selection_limit]="1"
+              [update_selected_seats]="selectedSeats"
+              [can_select_unavailable]="true"
+              (seatsSelected)="seatSelected($event)"></seating-chart>
+            <!--
+            <seating-chart
+              *ngIf="!update"
+              [room]="XL"
+              [seat_availability]="status.seat_availability"
+              [selection_limit]="1"
+              [can_select_unavailable]="true"
+              (seatsSelected)="seatSelected($event)"></seating-chart>
+            -->
+          </ng-container>
+        </ng-container>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
