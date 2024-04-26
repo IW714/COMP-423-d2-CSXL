@@ -11,6 +11,9 @@ import { Router } from '@angular/router';
 import { Reservation, TableCell } from 'src/app/coworking/coworking.models';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AcademicsService } from 'src/app/academics/academics.service';
+import { SeatInterface } from 'src/app/admin/room/seat';
+import { Room } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'room-reservation-table',
@@ -43,7 +46,8 @@ export class RoomReservationWidgetComponent {
     protected reservationTableService: ReservationTableService,
     private router: Router,
     private roomReservationService: RoomReservationService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    private academicsService: AcademicsService
   ) {
     this.reservationTableService.setSelectedDate(
       this.reservationTableService.setMinDate().toDateString()
@@ -134,10 +138,38 @@ export class RoomReservationWidgetComponent {
    * ```
    */
 
+  fetchRoomSeats(roomId?: string): any {
+    if (!roomId) {
+      console.error('No room ID provided');
+      return undefined;
+    }
+    this.academicsService.getRoom(roomId).subscribe({
+      next: (room: Room) => {
+        console.log('Room details:', room);
+        if (room.seats && room.seats.length > 0) {
+          return room.seats;
+        } else {
+          console.log('No seats available for this room.');
+          return;
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching room details:', error);
+      }
+    });
+  }
+
   draftReservation() {
+    const room = this.reservationTableService._findSelectedRoom(
+      this.reservationsMap
+    );
+
+    const seats = this.fetchRoomSeats(room?.room);
+
     const result = this.reservationTableService.draftReservation(
       this.reservationsMap,
-      this.operationStart
+      this.operationStart,
+      seats
     );
     result.subscribe(
       (reservation: Reservation) => {

@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SectionOfferingsComponent } from './section-offerings/section-offerings.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AcademicsHomeComponent } from './academics-home/academics-home.component';
 import { AcademicsAdminComponent } from './academics-admin/academics-admin.component';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -24,9 +24,11 @@ import { CourseEditorComponent } from './academics-admin/course/course-editor/co
 import { MatInputModule } from '@angular/material/input';
 import { TermEditorComponent } from './academics-admin/term/term-editor/term-editor.component';
 import { SectionEditorComponent } from './academics-admin/section/section-editor/section-editor.component';
-import { AdminRoomComponent } from './academics-admin/room/admin-room.component';
-import { RoomEditorComponent } from './academics-admin/room/room-editor/room-editor.component';
+import { AdminRoomComponent } from '../admin/room/admin-room.component';
+import { RoomEditorComponent } from '../admin/room/room-editor/room-editor.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { RoomLayoutEditorComponent } from '../admin/room/room-layout-editor/room-layout-editor.component';
+import { RoomItemCard } from '../admin/room/widgets/room-item-card.widget/room-item-card.widget';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     TermEditorComponent,
     SectionEditorComponent,
     AdminRoomComponent,
-    RoomEditorComponent
+    RoomEditorComponent,
+    RoomLayoutEditorComponent,
+    RoomItemCard
   ],
   imports: [
     AcademicsRoutingModule,
@@ -59,7 +63,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatTabsModule,
     MatInputModule,
     MatCheckboxModule,
-    AsyncPipe
+    AsyncPipe,
+    FormsModule
   ]
 })
 export class AcademicsModule {}

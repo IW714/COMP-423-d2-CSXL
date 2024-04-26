@@ -1,0 +1,13 @@
+.input-field {
+    width: 100%;
+  }
+  
+.checkbox-group {
+display: flex;
+flex-direction: column;
+margin-top: 10px;
+}
+
+.item-card mat-form-field .mat-error {
+  text-align: right;
+}

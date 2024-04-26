@@ -13,6 +13,7 @@ from ....services.coworking import (
     ReservationService,
     PolicyService,
     StatusService,
+    TableService,
 )
 
 __authors__ = [
@@ -46,8 +47,13 @@ def room_svc(session: Session):
 
 @pytest.fixture()
 def seat_svc(session: Session):
-    """SeatService fixture."""
-    return SeatService(session)
+    """SeatService fixture with a real PermissionService."""
+    return SeatService(session, PermissionService(session))
+
+@pytest.fixture()
+def table_svc(session: Session):
+    """TableService fixture with a real PermissionService."""
+    return TableService(session, PermissionService(session))
 
 
 @pytest.fixture()

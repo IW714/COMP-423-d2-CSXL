@@ -18,6 +18,7 @@ import {
 import { ProfileService } from '../profile/profile.service';
 import { Profile } from '../models.module';
 import { RxCoworkingStatus } from './rx-coworking-status';
+import { Room } from './coworking.models';
 
 const ONE_HOUR = 60 * 60 * 1000;
 
@@ -53,7 +54,7 @@ export class CoworkingService implements OnDestroy {
       .subscribe((status) => this.status.set(status));
   }
 
-  draftReservation(seatSelection: SeatAvailability[]) {
+  draftReservation(seatSelection: SeatAvailability[], room: Room) {
     if (this.profile === undefined) {
       throw new Error('Only allowed for logged in users.');
     }
@@ -66,7 +67,8 @@ export class CoworkingService implements OnDestroy {
         return { id: seatAvailability.id };
       }),
       start,
-      end
+      end,
+      room: room
     };
 
     return this.http

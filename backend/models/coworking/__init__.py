@@ -1,5 +1,6 @@
 from .seat import Seat
 from .seat_details import SeatDetails
+from .table_details import TableDetails
 
 from .time_range import TimeRange
 
@@ -22,6 +23,8 @@ from .status import Status
 __all__ = [
     "Seat",
     "SeatDetails",
+    "TableDetails",
+    "Table",
     "TimeRange",
     "OperatingHours",
     "Reservation",

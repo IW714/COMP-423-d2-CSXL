@@ -5,12 +5,18 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Reservation } from 'src/app/coworking/coworking.models';
-import { Observable, map, timer } from 'rxjs';
+import {
+  Reservation,
+  SeatAvailability
+} from 'src/app/coworking/coworking.models';
+import { Observable, ObservableLike, map, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoworkingService } from '../../coworking.service';
+import { AcademicsService } from '../../../academics/academics.service';
+import { Room } from 'src/app/academics/academics.models';
+import { SeatInterface } from 'src/app/admin/room/seat';
 
 @Component({
   selector: 'coworking-reservation-card',
@@ -24,6 +30,9 @@ export class CoworkingReservationCard implements OnInit {
   @Output() updateActiveReservation = new EventEmitter<void>();
   @Output() reloadCoworkingHome = new EventEmitter<void>();
 
+  public room$!: Observable<Room>;
+  public filteredSeats: SeatInterface[] = [];
+  public seatAvailabilities: SeatAvailability[] = [];
   public draftConfirmationDeadline$!: Observable<string>;
   isCancelExpanded$: Observable<boolean>;
 
@@ -31,7 +40,8 @@ export class CoworkingReservationCard implements OnInit {
     public router: Router,
     public reservationService: RoomReservationService,
     protected snackBar: MatSnackBar,
-    public coworkingService: CoworkingService
+    public coworkingService: CoworkingService,
+    public academicsService: AcademicsService
   ) {
     this.isCancelExpanded$ =
       this.coworkingService.isCancelExpanded.asObservable();
@@ -47,6 +57,33 @@ export class CoworkingReservationCard implements OnInit {
    */
   ngOnInit(): void {
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
+
+    if (this.reservation.room && this.reservation.room.id) {
+      this.room$ = this.academicsService.getRoom(this.reservation.room.id);
+
+      // Subscribe to the room$ observable to log its emitted value
+      this.room$.subscribe({
+        next: (room) => {
+          console.log('Room:', room);
+        },
+        error: (err) => {
+          console.error('Error fetching room:', err);
+        }
+      });
+    } else {
+      console.log('No room ID available, cannot fetch room');
+    }
+
+    this.prepareSeats();
+  }
+
+  private prepareSeats(): void {
+    if (this.reservation && this.reservation.seats) {
+      this.seatAvailabilities = this.reservation.seats.map((seat) => ({
+        ...seat,
+        availability: [] // Initialize with an empty array or fetch actual availability if required
+      }));
+    }
   }
 
   checkinDeadline(reservationStart: Date): Date {

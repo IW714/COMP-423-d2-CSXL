@@ -17,9 +17,12 @@ class Seat(SeatIdentity, BaseModel):
     reservable: bool
     has_monitor: bool
     sit_stand: bool
-    x: int
-    y: int
+    rotation: float
+    width: float
+    height: float
+    x: float
+    y: float
 
 
 class NewSeat(Seat, BaseModel):
-    id: int | None = None
+    id: int | None

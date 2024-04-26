@@ -11,10 +11,10 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { permissionGuard } from 'src/app/permission.guard';
-import { AcademicsService } from '../../academics.service';
-import { RxRoomList } from '../rx-academics-admin';
+import { AcademicsService } from '../../academics/academics.service';
+import { RxRoomList } from '../../academics/academics-admin/rx-academics-admin';
 import { Observable } from 'rxjs';
-import { Room } from '../../academics.models';
+import { Room } from '../../academics/academics.models';
 
 @Component({
   selector: 'app-admin-room',

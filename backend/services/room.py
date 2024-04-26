@@ -12,7 +12,8 @@ from ..models import RoomDetails
 from ..models.user import User
 from ..entities import RoomEntity
 from .permission import PermissionService
-
+from backend.entities.coworking import SeatEntity
+from typing import List
 from ..services.exceptions import ResourceNotFoundException
 from datetime import datetime
 
@@ -89,7 +90,10 @@ class RoomService:
         # Return added object
         return room_entity.to_details_model()
 
-    def update(self, subject: User, room: RoomDetails) -> RoomDetails:
+    def update(
+        self, subject: User, room: RoomDetails
+    ) -> RoomDetails:
+
         """Updates a room.
 
         Args:

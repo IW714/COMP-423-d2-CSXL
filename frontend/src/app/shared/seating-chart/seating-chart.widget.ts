@@ -9,7 +9,8 @@ import {
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Room } from 'src/app/academics/academics.models';
-import { Seat, SeatAvailability } from 'src/app/coworking/coworking.models';
+import { SeatInterface } from 'src/app/admin/room/seat';
+import { SeatAvailability } from 'src/app/coworking/coworking.models';
 
 @Component({
   selector: 'seating-chart',
@@ -20,17 +21,32 @@ export class SeatingChart implements OnInit, OnChanges {
   @Input() room!: Room;
   @Input() seat_availability!: SeatAvailability[];
   @Input() selection_limit?: number;
+  @Input() viewOnly?: boolean;
   @Input() update_selected_seats?: SeatAvailability[];
   @Input() can_select_unavailable?: boolean;
   @Output() seatsSelected = new EventEmitter<SeatAvailability[]>();
 
   protected selected_seats: SeatAvailability[];
+  protected viewOnlySeats: SeatInterface[];
 
   constructor(private snackBar: MatSnackBar) {
     this.selected_seats = [];
+    this.viewOnlySeats = [];
   }
 
   ngOnInit() {
+    console.log(this.seat_availability); // Debug to see the room object and its seats
+
+    if (this.room && this.room.seats) {
+      const seatIdsInAvailability = new Set(
+        this.seat_availability.map((seat) => seat.id)
+      );
+
+      // Filter out seats that are in seat_availability
+      this.viewOnlySeats = this.room.seats.filter(
+        (seat) => !seatIdsInAvailability.has(seat.id)
+      );
+    }
     this.selected_seats = [];
   }
 
@@ -69,13 +85,15 @@ export class SeatingChart implements OnInit, OnChanges {
     const epsilon = 59 /* seconds */ * 1000; /* milliseconds */
     const now = new Date(Date.now() + epsilon);
 
-    if (!seat.reservable || seat.availability[0].start > now) {
-      if (!this.can_select_unavailable) {
-        this.snackBar.open('This seat is unavailable', 'Close', {
-          duration: 3000
-        });
-        return;
-      }
+    if (
+      seat.availability.length === 0 ||
+      !seat.reservable ||
+      seat.availability[0].start > now
+    ) {
+      this.snackBar.open('This seat is unavailable', 'Close', {
+        duration: 3000
+      });
+      return;
     }
     // functionality will need to be changed when hooked up to reservation system
 
@@ -107,15 +125,36 @@ export class SeatingChart implements OnInit, OnChanges {
   }
 
   getImagePath(seat: SeatAvailability): string {
+    if (this.viewOnly) {
+      return 'assets/seat-yellow.png';
+    }
+
     const epsilon = 59 /* seconds */ * 1000; /* milliseconds */
     const now = new Date(Date.now() + epsilon);
     const isSelected =
       this.selected_seats.findIndex((s) => s.id === seat.id) != -1;
 
-    if (!seat.reservable || seat.availability[0].start > now) {
-      if (!isSelected) return 'assets/seat-grey.png';
+    if (
+      seat.availability.length === 0 ||
+      !seat.reservable ||
+      seat.availability[0].start > now
+    ) {
+      return 'assets/seat-grey.png';
     }
 
-    return isSelected ? 'assets/seat-yellow.png' : 'assets/seat-green.png';
+    let seatTypePath = '';
+    if (seat.has_monitor && seat.sit_stand) {
+      seatTypePath = 'assets/seat-purple.png';
+    } else if (seat.has_monitor) {
+      seatTypePath = 'assets/seat-green.png';
+    } else {
+      seatTypePath = 'assets/seat-red.png';
+    }
+
+    return isSelected ? 'assets/seat-yellow.png' : seatTypePath;
+  }
+
+  viewOnlyGetImagePath(): string {
+    return 'assets/seat-grey.png';
   }
 }

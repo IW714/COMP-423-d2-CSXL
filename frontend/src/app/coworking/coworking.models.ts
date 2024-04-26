@@ -1,3 +1,4 @@
+import { SeatInterface } from '../admin/room/seat';
 import { Profile } from '../models.module';
 import { TimeRangeJSON, TimeRange } from '../time-range';
 
@@ -22,17 +23,6 @@ export const parseOperatingHoursJSON = (
   return Object.assign({}, json, parseTimeRange(json));
 };
 
-export interface Seat {
-  id: number;
-  title: string;
-  shorthand: string;
-  reservable: boolean;
-  has_monitor: boolean;
-  sit_stand: boolean;
-  x: number;
-  y: number;
-}
-
 export interface Room {
   id: string | null;
   nickname: string;
@@ -41,7 +31,7 @@ export interface Room {
 export interface ReservationJSON extends TimeRangeJSON {
   id: number;
   users: Profile[];
-  seats: Seat[];
+  seats: SeatInterface[];
   walkin: boolean;
   created_at: string;
   updated_at: string;
@@ -52,7 +42,7 @@ export interface ReservationJSON extends TimeRangeJSON {
 export interface Reservation extends TimeRange {
   id: number;
   users: Profile[];
-  seats: Seat[];
+  seats: SeatInterface[];
   walkin: boolean;
   created_at: Date;
   updated_at: Date;
@@ -68,11 +58,11 @@ export const parseReservationJSON = (json: ReservationJSON): Reservation => {
   return Object.assign({}, json, parseTimeRange(json), timestamps);
 };
 
-export interface SeatAvailabilityJSON extends Seat {
+export interface SeatAvailabilityJSON extends SeatInterface {
   availability: TimeRangeJSON[];
 }
 
-export interface SeatAvailability extends Seat {
+export interface SeatAvailability extends SeatInterface {
   availability: TimeRange[];
 }
 
@@ -107,7 +97,7 @@ export const parseCoworkingStatusJSON = (
 
 export interface ReservationRequest extends TimeRange {
   users: Profile[] | null;
-  seats: Seat[] | null;
+  seats: SeatInterface[] | null;
   room: { id: string };
 }
 /* Interface for Room Reservation Type */

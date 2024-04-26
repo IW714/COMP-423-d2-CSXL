@@ -18,10 +18,71 @@
       <image
         [attr.x]="seat.x"
         [attr.y]="seat.y"
-        width="20"
-        height="20"
+        [attr.width]="seat.width"
+        [attr.height]="seat.height"
+        [attr.transform]="
+          'rotate(' +
+          seat.rotation +
+          ',' +
+          (seat.x + seat.width / 2) +
+          ',' +
+          (seat.y + seat.height / 2) +
+          ')'
+        "
         [attr.href]="getImagePath(seat)"
-        (click)="seatClicked(seat)"></image>
+        (click)="viewOnly ? null : seatClicked(seat)"></image>
+    </g>
+    <!-- ViewOnly Seats -->
+    <ng-container *ngIf="viewOnly">
+      <g *ngFor="let seat of viewOnlySeats">
+        <image
+          [attr.x]="seat.x"
+          [attr.y]="seat.y"
+          [attr.width]="seat.width"
+          [attr.height]="seat.height"
+          [attr.transform]="
+            'rotate(' +
+            seat.rotation +
+            ',' +
+            (seat.x + seat.width / 2) +
+            ',' +
+            (seat.y + seat.height / 2) +
+            ')'
+          "
+          [attr.href]="viewOnlyGetImagePath()"></image>
+      </g>
+    </ng-container>
+    <g *ngFor="let table of room.tables">
+      <circle
+        *ngIf="table.is_circle"
+        [attr.cx]="table.x + table.radius"
+        [attr.cy]="table.y + table.radius"
+        [attr.r]="table.radius"
+        fill="brown"
+        stroke="black"
+        stroke-width="1"
+        rx="5"
+        ry="5"></circle>
+      <rect
+        *ngIf="!table.is_circle"
+        [attr.x]="table.x"
+        [attr.y]="table.y"
+        [attr.width]="table.width"
+        [attr.height]="table.height"
+        fill="brown"
+        stroke="black"
+        stroke-width="1"
+        rx="5"
+        ry="5"
+        [attr.transform]="
+          'rotate(' +
+          table.rotation +
+          ',' +
+          (table.x + table.width / 2) +
+          ',' +
+          (table.y + table.height / 2) +
+          ')'
+        "></rect>
     </g>
   </svg>
 </div>

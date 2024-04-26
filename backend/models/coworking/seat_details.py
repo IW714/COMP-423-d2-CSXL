@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 
-from .seat import Seat
+from .seat import Seat, NewSeat
 from .. import Room
 
 __authors__ = ["Kris Jordan"]
@@ -11,4 +11,8 @@ __license__ = "MIT"
 
 
 class SeatDetails(Seat, BaseModel):
+    room: Room
+
+
+class NewSeatDetails(NewSeat, BaseModel):
     room: Room

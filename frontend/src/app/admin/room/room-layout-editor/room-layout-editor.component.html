@@ -1,0 +1,248 @@
+<div class="container">
+  <svg
+    id="room-editor"
+    class="scale-svg"
+    [attr.viewBox]="'0 0 ' + (roomWidth + 10) + ' ' + (roomLength + 10)"
+    (dblclick)="clearSelection($event)"
+    (keydown)="handleKeyDown($event)">
+    <rect
+      [attr.x]="5"
+      [attr.y]="5"
+      [attr.width]="roomWidth"
+      [attr.height]="roomLength"
+      fill="white"
+      stroke="black"
+      stroke-width="2"
+      rx="5"
+      ry="5"
+      class="room-rectangle" />
+    <g
+      *ngFor="let seat of seats$ | async"
+      [attr.transform]="
+        'rotate(' +
+        seat.rotation +
+        ',' +
+        (seat.x + seat.width / 2) +
+        ',' +
+        (seat.y + seat.height / 2) +
+        ')'
+      "
+      (mousedown)="selectItem(seat, $event)"
+      (dblclick)="toggleResizing(seat, $event)">
+      <!-- Seat -->
+      <image
+        [attr.x]="seat.x"
+        [attr.y]="seat.y"
+        [attr.width]="seat.width"
+        [attr.height]="seat.height"
+        onmousedown="return false"
+        [attr.href]="getImagePath(seat)"
+        class="seat-image"></image>
+
+      <!-- Selection box, rotation handle, and resizing toggles (only rendered if selectedForResizing is true) -->
+      <ng-container *ngIf="seat.selectedForResizing">
+        <rect
+          [attr.x]="seat.x"
+          [attr.y]="seat.y"
+          [attr.width]="seat.width"
+          [attr.height]="seat.height"
+          fill="none"
+          stroke="black" />
+        <line
+          [attr.x1]="seat.x + seat.width / 2"
+          [attr.y1]="seat.y - 10"
+          [attr.x2]="seat.x + seat.width / 2"
+          [attr.y2]="seat.y"
+          stroke="black" />
+        <circle
+          [attr.cx]="seat.x + seat.width / 2"
+          [attr.cy]="seat.y - 15"
+          r="5"
+          fill="black"
+          (mousedown)="
+            startRotating(seat, $event); $event.stopPropagation()
+          "></circle>
+      </ng-container>
+    </g>
+    <g
+      *ngFor="let table of tables$ | async"
+      [attr.transform]="
+        'rotate(' +
+        table.rotation +
+        ',' +
+        (table.x + table.width / 2) +
+        ',' +
+        (table.y + table.height / 2) +
+        ')'
+      ">
+      <ng-container *ngIf="!table.is_circle">
+        <rect
+          [attr.x]="table.x"
+          [attr.y]="table.y"
+          [attr.width]="table.width"
+          [attr.height]="table.height"
+          fill="brown"
+          stroke="black"
+          stroke-width="1"
+          rx="5"
+          ry="5"
+          (mousedown)="selectItem(table, $event)"
+          (dblclick)="toggleResizing(table, $event)"></rect>
+      </ng-container>
+      <!-- Circle Table -->
+      <ng-container *ngIf="table.is_circle">
+        <circle
+          [attr.cx]="table.x + table.radius"
+          [attr.cy]="table.y + table.radius"
+          [attr.r]="table.radius"
+          fill="brown"
+          stroke="black"
+          stroke-width="1"
+          (mousedown)="selectItem(table, $event)"
+          (dblclick)="toggleResizing(table, $event)"></circle>
+      </ng-container>
+      <ng-container *ngIf="table.selectedForResizing">
+        <ng-container *ngIf="table.is_circle">
+          <!-- Selection Box for Circle -->
+          <rect
+            [attr.x]="table.x - 7.5"
+            [attr.y]="table.y - 7.5"
+            [attr.width]="2 * table.radius + 15"
+            [attr.height]="2 * table.radius + 15"
+            fill="none"
+            stroke="black"></rect>
+
+          <!-- Resizing handles at the corners of the bounding box for the circle -->
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x - 12.5"
+            [attr.y]="table.y - 12.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'top-left'); $event.stopPropagation()
+            "></rect>
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x + 2 * table.radius + 2.5"
+            [attr.y]="table.y - 12.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'top-right');
+              $event.stopPropagation()
+            "></rect>
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x - 12.5"
+            [attr.y]="table.y + 2 * table.radius + 2.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'bottom-left');
+              $event.stopPropagation()
+            "></rect>
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x + 2 * table.radius + 2.5"
+            [attr.y]="table.y + 2 * table.radius + 2.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'bottom-right');
+              $event.stopPropagation()
+            "></rect>
+        </ng-container>
+
+        <ng-container *ngIf="!table.is_circle">
+          <rect
+            [attr.x]="table.x - 7.5"
+            [attr.y]="table.y - 7.5"
+            [attr.width]="table.width + 15"
+            [attr.height]="table.height + 15"
+            fill="none"
+            stroke="black" />
+          <!-- Top center rotation handle (already correct) -->
+          <circle
+            [attr.cx]="table.x + table.width / 2"
+            [attr.cy]="table.y - 25"
+            r="5"
+            fill="black"
+            (mousedown)="
+              startRotating(table, $event); $event.stopPropagation()
+            "></circle>
+          <line
+            [attr.x1]="table.x + table.width / 2"
+            [attr.y1]="table.y - 20"
+            [attr.x2]="table.x + table.width / 2"
+            [attr.y2]="table.y"
+            stroke="black" />
+          <!-- Resizing corners -->
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x - 12.5"
+            [attr.y]="table.y - 12.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'top-left'); $event.stopPropagation()
+            "></rect>
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x + table.width + 2.5"
+            [attr.y]="table.y - 12.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'top-right');
+              $event.stopPropagation()
+            "></rect>
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x - 12.5"
+            [attr.y]="table.y + table.height + 2.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'bottom-left');
+              $event.stopPropagation()
+            "></rect>
+          <rect
+            class="resizeable-box"
+            [attr.x]="table.x + table.width + 2.5"
+            [attr.y]="table.y + table.height + 2.5"
+            width="10"
+            height="10"
+            rx="2"
+            ry="2"
+            (mousedown)="
+              startResizing(table, $event, 'bottom-right');
+              $event.stopPropagation()
+            "></rect>
+        </ng-container>
+      </ng-container>
+    </g>
+    <g *ngFor="let line of alignmentLines$ | async">
+      <line
+        class="light-red-line"
+        [attr.x1]="line.x1"
+        [attr.y1]="line.y1"
+        [attr.x2]="line.x2"
+        [attr.y2]="line.y2" />
+    </g>
+  </svg>
+</div>

@@ -35,7 +35,10 @@
             <ng-container *ngIf="room as room">
               <seating-chart
                 [room]="room"
-                [seat_availability]="status.seat_availability"
+                [seat_availability]="
+                  room.id === 'SN156' ? status.seat_availability : this.seats
+                "
+                [viewOnly]="false"
                 [update_selected_seats]="selectedSeats"
                 (seatsSelected)="seatsSelected($event)"></seating-chart>
             </ng-container>
@@ -46,12 +49,42 @@
             <ng-container *ngIf="room as room">
               <seating-chart
                 [room]="room"
-                [seat_availability]="status.seat_availability"
+                [seat_availability]="
+                  room.id === 'SN156' ? status.seat_availability : this.seats
+                "
                 [selection_limit]="2"
                 (seatsSelected)="seatsSelected($event)"></seating-chart>
             </ng-container>
           </ng-container>
         </ng-template>
+      </mat-card-content>
+      <!-- Seat Legend -->
+      <mat-card-content>
+        <div class="seat-legend">
+          <div class="legend-items">
+            <!-- Manually defined legend items -->
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #9FFFA9;"></span>
+              <span class="legend-text">Sitting Desk with Monitor</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #9FA6FF;"></span>
+              <span class="legend-text">Standing Desk with Monitor</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #FF9BA5;"></span>
+              <span class="legend-text">Communal Area Seats</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #FFC700;"></span>
+              <span class="legend-text">Selected Seats</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #CCCCCC;"></span>
+              <span class="legend-text">Unavailable Seats</span>
+            </div>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

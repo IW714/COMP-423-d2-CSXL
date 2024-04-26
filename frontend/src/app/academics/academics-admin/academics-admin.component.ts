@@ -23,7 +23,6 @@ export class AcademicsAdminComponent {
   public links = [
     { label: 'Sections', path: '/academics/admin/section' },
     { label: 'Courses', path: '/academics/admin/course' },
-    { label: 'Rooms', path: '/academics/admin/room' },
     { label: 'Terms', path: '/academics/admin/term' }
   ];
 

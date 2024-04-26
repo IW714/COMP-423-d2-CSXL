@@ -47,7 +47,9 @@ class StatusService:
             # relatively open, the walkin could then more likely be extended while it is not busy.
             # This also prioritizes _not_ placing walkins in reservable seats.
         )
-        seats = self._seat_svc.list()  # All Seats are fair game for walkin purposes
+        seats = self._seat_svc.get_by_room_id(
+            "SN156"
+        )  # All Seats are fair game for walkin purposes
         seat_availability = self._reservation_svc.seat_availability(
             seats, walkin_window
         )

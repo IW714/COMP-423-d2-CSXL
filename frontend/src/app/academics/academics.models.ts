@@ -7,7 +7,8 @@
  * @license MIT
  */
 
-import { Seat } from '../coworking/coworking.models';
+import { SeatInterface } from '../admin/room/seat';
+import { TableInterface } from '../admin/room/table';
 import { TimeRange } from '../time-range';
 
 /** Defines a Course */
@@ -61,7 +62,8 @@ export interface Room {
   room: string | null;
   capacity: number | null;
   reservable: boolean | null;
-  seats: Seat[] | null;
+  seats: SeatInterface[] | null;
+  tables: TableInterface[] | null;
   x: number;
   y: number;
   width: number;

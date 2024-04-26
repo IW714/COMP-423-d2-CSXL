@@ -1,0 +1,41 @@
+.container {
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  overflow: auto;
+  width: 100%;
+  height: auto;
+}
+
+.chair-path {
+  fill: gray;
+  transition: fill 0.2s;
+}
+
+.chair-path:hover {
+  fill: #8af295;
+}
+
+.room-rectangle {
+  stroke: #a7a4a4;
+  stroke-width: 1;
+  fill: white;
+}
+
+#room-editor {
+  margin-right: 0px; /* Adjust the value as needed */
+}
+
+.resizeable-box {
+  fill: black;
+  border-radius: 10px;
+}
+
+.scale-svg {
+  transform: scale(1);
+  transform-origin: top left;
+}
+
+.light-red-line {
+  stroke: rgba(255, 4, 4, 0.563);
+  stroke-width: .5;
+}

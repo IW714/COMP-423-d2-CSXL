@@ -11,12 +11,13 @@ import { Room } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { CoworkingStatus, Seat, SeatAvailability } from '../coworking.models';
+import { CoworkingStatus, SeatAvailability } from '../coworking.models';
 import { roomResolver } from 'src/app/academics/academics.resolver';
 import { Profile, PublicProfile } from 'src/app/profile/profile.service';
 import { CoworkingService } from '../coworking.service';
 import { PermissionService } from 'src/app/permission.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TimeRange } from 'src/app/time-range';
 import { AmbassadorXlService } from '../ambassador-home/ambassador-xl/ambassador-xl.service';
 import { Location } from '@angular/common';
 
@@ -40,6 +41,7 @@ export class RoomSelectionComponent implements OnInit {
   public status$: Observable<CoworkingStatus>;
   public adminPermission$: Observable<boolean>;
   public ambassadorPermission$: Observable<boolean>;
+  public seats: SeatAvailability[];
   public ambassadorUsers?: PublicProfile[];
   public update: Boolean = false;
 
@@ -88,6 +90,7 @@ export class RoomSelectionComponent implements OnInit {
       'coworking.reservation.*',
       '*'
     );
+    this.seats = [];
 
     let state: any = location.getState();
     this.ambassadorUsers = state.users;
@@ -95,8 +98,16 @@ export class RoomSelectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    /* 
+    TODO: make it so that it only polls for status if the room is SN156,
+          this requires changing the html ngIf logic
+    */
     this.status$ = this.coworkingService.status$;
     this.coworkingService.pollStatus();
+    this.room.seats?.forEach((seat) => {
+      this.seats.push(Object.assign({}, seat, { availability: [] }));
+    });
+    console.log(this.room);
   }
 
   seatsSelected(seats: SeatAvailability[]): void {
@@ -109,6 +120,11 @@ export class RoomSelectionComponent implements OnInit {
   }
 
   reserve(seatSelection: SeatAvailability[]) {
+    const reservationRoom = {
+      id: this.room.id,
+      nickname: this.room.nickname // Assuming these fields exist on the Room object
+    };
+
     if (this.ambassadorUsers) {
       this.ambassadorService
         .makeDropinReservation(seatSelection, this.ambassadorUsers)
@@ -132,16 +148,18 @@ export class RoomSelectionComponent implements OnInit {
         });
       return;
     }
-    this.coworkingService.draftReservation(seatSelection).subscribe({
-      error: (error) => {
-        this.snackBar.open(error.error.message, '', { duration: 3000 });
-        this.selectedSeats = [];
+    this.coworkingService
+      .draftReservation(seatSelection, reservationRoom)
+      .subscribe({
+        error: (error) => {
+          this.snackBar.open(error.error.message, '', { duration: 3000 });
+          this.selectedSeats = [];
         this.updateWidget();
-      },
-      next: (reservation) => {
-        this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
-      }
-    });
+        },
+        next: (reservation) => {
+          this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
+        }
+      });
   }
 
   updateWidget() {

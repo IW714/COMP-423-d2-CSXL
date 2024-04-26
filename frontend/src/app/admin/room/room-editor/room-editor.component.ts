@@ -7,7 +7,14 @@
  * @license MIT
  */
 
-import { Component, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject
+} from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -28,6 +35,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Profile } from 'src/app/models.module';
 import { DatePipe } from '@angular/common';
+import { RoomItemService } from '../room-item.service';
+import { Subject, Subscribable, Subscription } from 'rxjs';
+import { RoomItem, RoomItemInterface } from '../room-item';
 
 const canActivateEditor: CanActivateFn = (
   route: ActivatedRouteSnapshot,
@@ -48,80 +58,96 @@ const canActivateEditor: CanActivateFn = (
   templateUrl: './room-editor.component.html',
   styleUrls: ['./room-editor.component.css']
 })
-export class RoomEditorComponent {
-  /** Route information to be used in the Routing Module */
+export class RoomEditorComponent implements OnInit {
   public static Route: Route = {
     path: 'room/edit/:id',
     component: RoomEditorComponent,
     title: 'Room Editor',
-    canActivate: [canActivateEditor],
     resolve: {
       profile: profileResolver,
       room: roomResolver
     }
   };
 
-  /** Store the currently-logged-in user's profile.  */
   public profile: Profile | null = null;
-
-  /** Store the room.  */
   public room: Room;
+  public roomId: string = 'new';
+  itemSubscription!: Subscription;
+  selectedItem!: RoomItemInterface | null;
 
-  /** Store the room id. */
-  roomId: string = 'new';
+  maxRoomWidth = 30;
+  maxRoomLength = 24;
 
-  /** Add validators to the form */
   id = new FormControl('', [Validators.required]);
   nickname = new FormControl('', [Validators.required]);
   building = new FormControl('', [Validators.required]);
   roomName = new FormControl('', [Validators.required]);
   capacity = new FormControl(0, [Validators.required]);
   reservable = new FormControl(false, [Validators.required]);
+  width = new FormControl({ value: 26.25, disabled: true }, [
+    Validators.required,
+    Validators.max(this.maxRoomWidth)
+  ]);
+  length = new FormControl({ value: 26.25, disabled: true }, [
+    Validators.required,
+    Validators.max(this.maxRoomLength)
+  ]);
 
-  /** Room Editor Form */
   public roomForm = this.formBuilder.group({
     id: this.id,
     nickname: this.nickname,
     building: this.building,
     room: this.roomName,
     capacity: this.capacity,
-    reservable: this.reservable
+    reservable: this.reservable,
+    width: this.width,
+    length: this.length
   });
 
-  /** Constructs the room editor component */
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     protected formBuilder: FormBuilder,
     protected snackBar: MatSnackBar,
     private academicsService: AcademicsService,
-    private datePipe: DatePipe
+    private roomItemService: RoomItemService
   ) {
-    /** Initialize data from resolvers. */
-    const data = this.route.snapshot.data as {
-      profile: Profile;
-      room: Room;
-    };
+    const data = this.route.snapshot.data as { profile: Profile; room: Room };
     this.profile = data.profile;
     this.room = data.room;
-
-    /** Get id from the url */
     this.roomId = this.route.snapshot.params['id'];
+  }
 
-    /** Set room form data */
+  ngOnInit(): void {
     this.roomForm.setValue({
       id: this.room.id,
       nickname: this.room.nickname,
       building: this.room.building,
       room: this.room.room,
       capacity: this.room.capacity,
-      reservable: this.room.reservable
+      reservable: this.room.reservable,
+      width: this.room.width / 10,
+      length: this.room.height / 10
     });
+
+    if (this.roomId == 'new') {
+      this.roomForm.get('width')?.enable();
+      this.roomForm.get('length')?.enable();
+
+      this.room.reservable = true;
+      this.academicsService.updateRoom(this.room).subscribe({
+        next: (room) => this.onSuccess(room),
+        error: (err) => this.onError(err)
+      });
+    }
+
+    this.itemSubscription = this.roomItemService.selectedItem$.subscribe(
+      (item) => {
+        this.selectedItem = item; // This will update even if item is null
+      }
+    );
   }
 
-  /** Event handler to handle submitting the Update Term Form.
-   * @returns {void}
-   */
   onSubmit(): void {
     if (this.roomForm.valid) {
       Object.assign(this.room, this.roomForm.value);
@@ -137,32 +163,59 @@ export class RoomEditorComponent {
           error: (err) => this.onError(err)
         });
       }
+      this.roomItemService.submitForm(this.roomId);
     }
   }
 
-  /** Opens a confirmation snackbar when a course is successfully updated.
-   * @returns {void}
-   */
   private onSuccess(room: Room): void {
     this.router.navigate(['/academics/admin/room']);
-
-    let message: string =
-      this.roomId === 'new' ? 'Room Created' : 'Room Updated';
-
-    this.snackBar.open(message, '', { duration: 2000 });
+    this.snackBar.open(
+      this.roomId === 'new' ? 'Room Created' : 'Room Updated',
+      '',
+      { duration: 2000 }
+    );
   }
 
-  /** Opens a snackbar when there is an error updating a room.
-   * @returns {void}
-   */
   private onError(err: any): void {
-    let message: string =
+    this.snackBar.open(
       this.roomId === 'new'
         ? 'Error: Room Not Created'
-        : 'Error: Room Not Updated';
+        : 'Error: Room Not Updated',
+      '',
+      { duration: 2000 }
+    );
+  }
 
-    this.snackBar.open(message, '', {
-      duration: 2000
-    });
+  createSeat(): void {
+    this.roomItemService.createSeat(this.roomId);
+  }
+
+  createTable(): void {
+    this.roomItemService.createTable(this.roomId);
+  }
+
+  validateRoomDimensionInput(event: KeyboardEvent, maxLimit: number) {
+    const inputElement = event.target as HTMLInputElement;
+    let proposedValue = inputElement.value + event.key;
+
+    // Allow backspace, delete, arrows, and control commands (like Ctrl+C, Ctrl+V)
+    if (
+      ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight'].includes(event.key) ||
+      event.ctrlKey
+    ) {
+      return; // Allow normal control operations without interference
+    }
+
+    // Block characters that aren't digits or necessary input control keys
+    if (!/[0-9]/.test(event.key)) {
+      event.preventDefault();
+      return;
+    }
+
+    // Convert the proposed value to an integer and check if it's within the allowed range
+    if (parseInt(proposedValue) > maxLimit || parseInt(proposedValue) <= 0) {
+      event.preventDefault();
+      return;
+    }
   }
 }

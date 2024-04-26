@@ -1,0 +1,135 @@
+<div class="editor-container">
+  <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title *ngIf="roomId === 'new'; else update"
+          >Create Room</mat-card-title
+        >
+        <ng-template #update
+          ><mat-card-title>Update Room</mat-card-title></ng-template
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field
+          *ngIf="roomId === 'new'"
+          appearance="outline"
+          color="accent">
+          <mat-label>Room ID</mat-label>
+          <input matInput formControlName="id" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Room Nickname</mat-label>
+          <input matInput formControlName="nickname" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Room Building</mat-label>
+          <input matInput formControlName="building" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Room Number</mat-label>
+          <input matInput formControlName="room" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Room Capacity</mat-label>
+          <input type="number" matInput formControlName="capacity" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Room Width (feet)</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="width"
+            required
+            [min]="1"
+            [max]="maxRoomWidth"
+            (keydown)="validateRoomDimensionInput($event, maxRoomWidth)" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" color="accent">
+          <mat-label>Room Length (feet)</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="length"
+            required
+            [min]="1"
+            [max]="maxRoomLength"
+            (keydown)="validateRoomDimensionInput($event, maxRoomLength)" />
+        </mat-form-field>
+        <p class="checkbox">
+          <mat-checkbox formControlName="reservable">Reservable?</mat-checkbox>
+        </p>
+      </mat-card-content>
+      <div class="button-actions">
+        <mat-card-actions>
+          <button mat-stroked-button routerLink="/academics/admin/room">
+            Cancel
+          </button>
+          <button
+            mat-stroked-button
+            type="submit"
+            [disabled]="roomForm.invalid">
+            Save
+          </button>
+          <button mat-stroked-button type="button" (click)="createSeat()">
+            Create Seat
+          </button>
+          <button mat-stroked-button type="button" (click)="createTable()">
+            Create Table
+          </button>
+        </mat-card-actions>
+      </div>
+    </mat-card>
+  </form>
+  <div class="layout-editor-container">
+    <mat-card appearance="outlined">
+      <app-room-layout-editor
+        [inputRoomWidth]="roomForm.get('width')?.value ?? 0"
+        [inputRoomLength]="roomForm.get('length')?.value ?? 0"
+        [inputRoomId]="this.roomId"
+        (createSeat)="createSeat()">
+      </app-room-layout-editor>
+
+      <mat-card-content>
+        <div class="seat-legend">
+          <div class="legend-items">
+            <!-- Manually defined legend items -->
+            <div class="legend-item">
+              <span
+                class="legend-color"
+                style="background-color: #9fffa9"></span>
+              <span class="legend-text">Sitting Desk with Monitor</span>
+            </div>
+            <div class="legend-item">
+              <span
+                class="legend-color"
+                style="background-color: #9fa6ff"></span>
+              <span class="legend-text">Standing Desk with Monitor</span>
+            </div>
+          </div>
+          <div class="legend-items">
+            <div class="legend-item">
+              <span
+                class="legend-color"
+                style="background-color: #ff9ba5"></span>
+              <span class="legend-text">Communal Area Seats</span>
+            </div>
+            <div class="legend-item">
+              <span
+                class="legend-color"
+                style="background-color: #cccccc"></span>
+              <span class="legend-text">Unreservable Seats</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<div
+  class="room-item-card"
+  *ngIf="selectedItem && selectedItem.selectedForResizing">
+  <mat-card appearance="outlined">
+    <room-item-card [item]="selectedItem"></room-item-card>
+  </mat-card>
+</div>

@@ -13,6 +13,7 @@ export class AdminComponent {
   public links = [
     { label: 'Users', path: '/admin/users' },
     { label: 'Roles', path: '/admin/roles' },
+    { label: 'Rooms', path: '/admin/room' },
     { label: 'Organizations', path: '/admin/organizations' }
   ];
 

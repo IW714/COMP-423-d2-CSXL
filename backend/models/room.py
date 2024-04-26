@@ -1,6 +1,8 @@
 """Room models the essential information about a room in the coworking space."""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
+
 
 
 __authors__ = ["Kris Jordan"]
@@ -12,4 +14,3 @@ class RoomPartial(BaseModel):
 
 class Room(RoomPartial):
     nickname: str = ""
-

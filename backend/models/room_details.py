@@ -3,6 +3,11 @@
 Importantly, it includes a room's seats, if seats are reservable as in the XL collab.
 """
 
+from typing import Optional
+
+from pydantic import Field
+
+from backend.models.coworking.table import Table
 from .room import Room
 from .coworking.seat import Seat
 
@@ -17,6 +22,7 @@ class RoomDetails(Room):
     capacity: int
     reservable: bool
     seats: list[Seat] = []
+    tables: list[Table] = []
     x: float
     y: float
     width: float

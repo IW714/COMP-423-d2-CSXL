@@ -4,6 +4,7 @@ from sqlalchemy import Integer, String, Boolean, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.entities.coworking import SeatEntity
+from backend.entities.coworking.table_entity import TableEntity
 from .entity_base import EntityBase
 from ..models import Room, RoomDetails
 from typing import Self
@@ -35,6 +36,10 @@ class RoomEntity(EntityBase):
         "SeatEntity", back_populates="room"
     )
 
+    tables: Mapped[list["TableEntity"]] = relationship(
+        "TableEntity", back_populates="room"
+    )
+
     course_sections: Mapped[list["SectionRoomEntity"]] = relationship(  # type: ignore
         back_populates="room"
     )
@@ -59,6 +64,7 @@ class RoomEntity(EntityBase):
             capacity=self.capacity,
             reservable=self.reservable,
             seats=[seat.to_model() for seat in self.seats],
+            tables=[table.to_model() for table in self.tables],
             x=self.x,
             y=self.y,
             width=self.width,
@@ -81,6 +87,8 @@ class RoomEntity(EntityBase):
             room=model.room,
             capacity=model.capacity,
             reservable=model.reservable,
+            seats=model.seats,
+            tables=model.tables,
             x=model.x,
             y=model.y,
             width=model.width,

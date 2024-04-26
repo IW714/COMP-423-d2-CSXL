@@ -17,6 +17,7 @@ import {
 import { ProfileService } from '../../profile/profile.service';
 import { Profile } from '../../models.module';
 import { RoomReservationWidgetComponent } from '../widgets/room-reservation-table/room-reservation-table.widget';
+import { SeatInterface } from 'src/app/admin/room/seat';
 
 @Injectable({
   providedIn: 'root'
@@ -87,7 +88,8 @@ export class ReservationTableService {
 
   draftReservation(
     reservationsMap: Record<string, number[]>,
-    operationStart: Date
+    operationStart: Date,
+    seats: SeatInterface[]
   ): Observable<Reservation> {
     const selectedRoom: { room: string; availability: number[] } | null =
       this._findSelectedRoom(reservationsMap);
@@ -95,8 +97,11 @@ export class ReservationTableService {
     if (!selectedRoom) throw new Error('No room selected');
     const reservationRequest: ReservationRequest = this._makeReservationRequest(
       selectedRoom!,
-      operationStart
+      operationStart,
+      seats
     );
+    console.log('RESERVATION REQUEST wOOOOOOOOOO:', reservationRequest.room);
+    console.log('RESERVATION REQUEST wOOOOOOOOOO:', reservationRequest.seats);
     return this.makeDraftReservation(reservationRequest);
   }
 
@@ -106,7 +111,7 @@ export class ReservationTableService {
   ): Observable<Reservation> {
     return this.http.post<Reservation>(
       `/api/coworking/reservation`,
-      reservationRequest
+      reservationRequest, 
     );
   }
 
@@ -196,7 +201,8 @@ export class ReservationTableService {
 
   _makeReservationRequest(
     selectedRoom: { room: string; availability: number[] },
-    operationStart: Date
+    operationStart: Date,
+    seats: SeatInterface[]
   ): ReservationRequest {
     const minIndex = selectedRoom?.availability.indexOf(
       ReservationTableService.CellEnum.RESERVING
@@ -215,7 +221,7 @@ export class ReservationTableService {
 
     return {
       users: [this.profile!],
-      seats: [],
+      seats: seats,
       room: { id: selectedRoom!.room },
       start: startDateTime,
       end: endDateTime

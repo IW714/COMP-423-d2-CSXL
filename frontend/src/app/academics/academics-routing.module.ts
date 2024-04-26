@@ -10,8 +10,9 @@ import { AdminSectionComponent } from './academics-admin/section/admin-section.c
 import { CourseEditorComponent } from './academics-admin/course/course-editor/course-editor.component';
 import { TermEditorComponent } from './academics-admin/term/term-editor/term-editor.component';
 import { SectionEditorComponent } from './academics-admin/section/section-editor/section-editor.component';
-import { AdminRoomComponent } from './academics-admin/room/admin-room.component';
-import { RoomEditorComponent } from './academics-admin/room/room-editor/room-editor.component';
+import { AdminRoomComponent } from '../admin/room/admin-room.component';
+import { RoomEditorComponent } from '../admin/room/room-editor/room-editor.component';
+import { RoomLayoutEditorComponent } from '../admin/room/room-layout-editor/room-layout-editor.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
       AdminTermComponent.Route,
       AdminCourseComponent.Route,
       AdminSectionComponent.Route,
-      AdminRoomComponent.Route
+      AdminRoomComponent.Route,
+      RoomLayoutEditorComponent.Route
     ]
   },
   AcademicsHomeComponent.Route,
