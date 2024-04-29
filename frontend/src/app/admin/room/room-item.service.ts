@@ -50,101 +50,71 @@ export class RoomItemService {
   tempIdCounter = -1;
 
   createSeat(roomID: string, seat?: SeatInterface): void {
-    if (seat) {
-      this.academicsService
-        .getRoom(roomID)
-        .pipe(first())
-        .subscribe((room) => {
-          const newSeat = new Seat(
-            { id: room.id, nickname: room.nickname } as Room,
-            this.tempIdCounter--,
-            seat.x + 10,
-            seat.y + 10,
-            seat.width,
-            seat.height,
-            seat.rotation,
-            false,
-            '',
-            '',
-            false,
-            false,
-            false,
-            'seat'
-          );
-          this.addItem(newSeat);
-        });
-    } else {
-      this.academicsService
-        .getRoom(roomID)
-        .pipe(first())
-        .subscribe((room) => {
-          const newSeat = new Seat(
-            { id: room.id, nickname: room.nickname } as Room,
-            this.tempIdCounter--, // Decrease each time to ensure uniqueness
-            5,
-            5,
-            20,
-            20,
-            0,
-            false,
-            '',
-            '',
-            false,
-            false,
-            false,
-            'seat'
-          );
-          this.addItem(newSeat);
-        });
-    }
+    this.academicsService
+      .getRoom(roomID)
+      .pipe(first())
+      .subscribe((room) => {
+        const seatTitle = this.generateSeatTitle(seat);
+
+        const newSeat = new Seat(
+          { id: room.id, nickname: room.nickname } as Room,
+          this.tempIdCounter--,
+          seat ? seat.x + 10 : 5,
+          seat ? seat.y + 10 : 5,
+          seat ? seat.width : 20,
+          seat ? seat.height : 20,
+          seat ? seat.rotation : 0,
+          false,
+          seatTitle,
+          '',
+          seat ? seat.reservable : false,
+          seat ? seat.has_monitor : false,
+          seat ? seat.sit_stand : false,
+          'seat'
+        );
+        this.addItem(newSeat);
+      });
   }
 
   createTable(roomID: string, table?: Table): void {
-    if (table) {
-      this.academicsService
-        .getRoom(roomID)
-        .pipe(first())
-        .subscribe((room) => {
-          const newTable = new Table(
-            { id: room.id, nickname: room.nickname } as Room,
-            this.tempIdCounter--,
-            table.x + 10,
-            table.y + 10,
-            table.width,
-            table.height,
-            table.rotation,
-            false,
-            0,
-            false,
-            'table'
-          );
-          this.addItem(newTable);
-        });
-    } else {
-      this.academicsService
-        .getRoom(roomID)
-        .pipe(first())
-        .subscribe((room) => {
-          const newTable = new Table(
-            { id: room.id, nickname: room.nickname } as Room, // Adjusted room object
-            this.tempIdCounter--,
-            5,
-            5,
-            40,
-            40,
-            0,
-            false,
-            0,
-            false,
-            'table'
-          );
-          this.addItem(newTable);
-        });
-    }
+    this.academicsService
+      .getRoom(roomID)
+      .pipe(first())
+      .subscribe((room) => {
+        const newTable = new Table(
+          { id: room.id, nickname: room.nickname } as Room,
+          this.tempIdCounter--,
+          table ? table.x + 10 : 5,
+          table ? table.y + 10 : 5,
+          table ? table.width : 40,
+          table ? table.height : 40,
+          table ? table.rotation : 0,
+          false,
+          table ? table.radius : 0,
+          table ? table.is_circle : false,
+          'table'
+        );
+        this.addItem(newTable);
+      });
   }
 
   addItem(item: RoomItemInterface): void {
     this.roomItemsSource.next([...this.roomItemsSource.getValue(), item]);
+  }
+
+  private generateSeatTitle(seat: SeatInterface | undefined): string {
+    if (!seat) {
+      return `Seat`;
+    }
+    let titlePrefix = 'Seat';
+    if (seat.has_monitor && seat.sit_stand) {
+      titlePrefix = 'Standing Desk with Monitor';
+    } else if (seat.has_monitor) {
+      titlePrefix = 'Sitting Desk with Monitor';
+    } else if (seat.reservable) {
+      titlePrefix = 'Communal Seat';
+    }
+    return `${titlePrefix}`;
   }
 
   deleteItem(item: RoomItemInterface): void {
