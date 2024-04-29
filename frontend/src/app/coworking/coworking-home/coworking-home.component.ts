@@ -97,12 +97,7 @@ export class CoworkingPageComponent implements OnInit, OnDestroy {
   }
 
   reserve(seatSelection: SeatAvailability[]) {
-    let room = {
-      id: 'SN156',
-      nickname: 'The XL'
-    };
-
-    this.coworkingService.draftReservation(seatSelection, room).subscribe({
+    this.coworkingService.draftReservation(seatSelection).subscribe({
       error: (error) =>
         this.snackBar.open(
           'Error. There may be a conflicting upcoming reservation. Please check upcoming reservations.',

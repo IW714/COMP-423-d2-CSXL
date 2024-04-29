@@ -32,26 +32,6 @@
         [attr.href]="getImagePath(seat)"
         (click)="viewOnly ? null : seatClicked(seat)"></image>
     </g>
-    <!-- ViewOnly Seats -->
-    <ng-container *ngIf="viewOnly">
-      <g *ngFor="let seat of viewOnlySeats">
-        <image
-          [attr.x]="seat.x"
-          [attr.y]="seat.y"
-          [attr.width]="seat.width"
-          [attr.height]="seat.height"
-          [attr.transform]="
-            'rotate(' +
-            seat.rotation +
-            ',' +
-            (seat.x + seat.width / 2) +
-            ',' +
-            (seat.y + seat.height / 2) +
-            ')'
-          "
-          [attr.href]="viewOnlyGetImagePath()"></image>
-      </g>
-    </ng-container>
     <g *ngFor="let table of room.tables">
       <circle
         *ngIf="table.is_circle"

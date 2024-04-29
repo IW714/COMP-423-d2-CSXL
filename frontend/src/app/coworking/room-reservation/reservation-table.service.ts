@@ -111,7 +111,7 @@ export class ReservationTableService {
   ): Observable<Reservation> {
     return this.http.post<Reservation>(
       `/api/coworking/reservation`,
-      reservationRequest, 
+      reservationRequest
     );
   }
 

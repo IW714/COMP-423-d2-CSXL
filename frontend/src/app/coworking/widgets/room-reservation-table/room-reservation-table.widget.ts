@@ -147,6 +147,8 @@ export class RoomReservationWidgetComponent {
       next: (room: Room) => {
         console.log('Room details:', room);
         if (room.seats && room.seats.length > 0) {
+          console.log(room.seats);
+
           return room.seats;
         } else {
           console.log('No seats available for this room.');

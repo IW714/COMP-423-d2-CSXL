@@ -66,9 +66,13 @@
         <!-- if not a room reservation then  XL Collab -->
         <h3>
           <label>Where</label>
-          <strong>{{ reservation.room ? reservation.room.id : 'The XL Colab in  Sitterson 156' }}</strong>
+          <strong>{{
+            reservation.room
+              ? reservation.room.id
+              : 'The XL Colab in  Sitterson 156'
+          }}</strong>
         </h3>
-        
+
         <ng-container
           *ngIf="reservation.state === 'CONFIRMED' && !checkCheckinAllowed()">
           <!-- Accordion Toggle Button with Material Icon -->
@@ -84,13 +88,19 @@
         </ng-container>
       </div>
 
-      <ng-container *ngIf="room$ | async as room">
-        <!-- Seating Chart for showing the seat layout -->
-        <seating-chart
-          [room]="room"
-          [seat_availability]="seatAvailabilities"
-          [viewOnly]="true">
-        </seating-chart>
+      <ng-container *ngIf="status$ | async as status">
+        <ng-container *ngIf="room$ | async as room">
+          <seating-chart
+            [room]="room"
+            [seat_availability]="
+              room.id === 'SN156'
+                ? status.seat_availability
+                : seatAvailabilities
+            "
+            [update_selected_seats]="updatedSeats"
+            [viewOnly]="true">
+          </seating-chart>
+        </ng-container>
       </ng-container>
     </div>
 

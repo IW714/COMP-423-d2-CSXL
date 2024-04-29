@@ -120,16 +120,12 @@ export class RoomSelectionComponent implements OnInit {
   }
 
   reserve(seatSelection: SeatAvailability[]) {
-    const reservationRoom = {
-      id: this.room.id,
-      nickname: this.room.nickname // Assuming these fields exist on the Room object
-    };
-
     if (this.ambassadorUsers) {
       this.ambassadorService
         .makeDropinReservation(seatSelection, this.ambassadorUsers)
         .subscribe({
           next: (reservation) => {
+            console.log(reservation);
             this.snackBar.open(
               `Walk-in reservation made for ${reservation.users[0].first_name} ${reservation.users[0].last_name}!`,
               'Close',
@@ -148,18 +144,14 @@ export class RoomSelectionComponent implements OnInit {
         });
       return;
     }
-    this.coworkingService
-      .draftReservation(seatSelection, reservationRoom)
-      .subscribe({
-        error: (error) => {
-          this.snackBar.open(error.error.message, '', { duration: 3000 });
-          this.selectedSeats = [];
-        this.updateWidget();
-        },
-        next: (reservation) => {
-          this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
-        }
-      });
+    this.coworkingService.draftReservation(seatSelection).subscribe({
+      error: (error) => {
+        this.snackBar.open(error.error.message, '', { duration: 3000 });
+      },
+      next: (reservation) => {
+        this.router.navigateByUrl(`/coworking/reservation/${reservation.id}`);
+      }
+    });
   }
 
   updateWidget() {

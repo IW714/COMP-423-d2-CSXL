@@ -27,26 +27,13 @@ export class SeatingChart implements OnInit, OnChanges {
   @Output() seatsSelected = new EventEmitter<SeatAvailability[]>();
 
   protected selected_seats: SeatAvailability[];
-  protected viewOnlySeats: SeatInterface[];
 
   constructor(private snackBar: MatSnackBar) {
     this.selected_seats = [];
-    this.viewOnlySeats = [];
   }
 
   ngOnInit() {
     console.log(this.seat_availability); // Debug to see the room object and its seats
-
-    if (this.room && this.room.seats) {
-      const seatIdsInAvailability = new Set(
-        this.seat_availability.map((seat) => seat.id)
-      );
-
-      // Filter out seats that are in seat_availability
-      this.viewOnlySeats = this.room.seats.filter(
-        (seat) => !seatIdsInAvailability.has(seat.id)
-      );
-    }
     this.selected_seats = [];
   }
 
@@ -56,7 +43,6 @@ export class SeatingChart implements OnInit, OnChanges {
 
     if (this.update_selected_seats) {
       this.selected_seats = this.update_selected_seats;
-      console.log(this.selected_seats);
     }
 
     if (this.can_select_unavailable) return;
@@ -65,8 +51,10 @@ export class SeatingChart implements OnInit, OnChanges {
 
     this.selected_seats = this.selected_seats.filter((seat) => {
       const found = this.seat_availability.find((s) => s.id === seat.id);
-      if (found) return found.availability[0].start <= now;
-      else return false;
+      if (found) {
+        if (!this.viewOnly) return found.availability[0].start <= now;
+        else return true;
+      } else return false;
     });
 
     if (this.selected_seats.length < before) {
@@ -85,15 +73,19 @@ export class SeatingChart implements OnInit, OnChanges {
     const epsilon = 59 /* seconds */ * 1000; /* milliseconds */
     const now = new Date(Date.now() + epsilon);
 
+    if (this.viewOnly && this.viewOnly == true) return;
+
     if (
       seat.availability.length === 0 ||
       !seat.reservable ||
       seat.availability[0].start > now
     ) {
-      this.snackBar.open('This seat is unavailable', 'Close', {
-        duration: 3000
-      });
-      return;
+      if (!this.can_select_unavailable) {
+        this.snackBar.open('This seat is unavailable', 'Close', {
+          duration: 3000
+        });
+        return;
+      }
     }
     // functionality will need to be changed when hooked up to reservation system
 
@@ -125,10 +117,6 @@ export class SeatingChart implements OnInit, OnChanges {
   }
 
   getImagePath(seat: SeatAvailability): string {
-    if (this.viewOnly) {
-      return 'assets/seat-yellow.png';
-    }
-
     const epsilon = 59 /* seconds */ * 1000; /* milliseconds */
     const now = new Date(Date.now() + epsilon);
     const isSelected =
@@ -139,7 +127,7 @@ export class SeatingChart implements OnInit, OnChanges {
       !seat.reservable ||
       seat.availability[0].start > now
     ) {
-      return 'assets/seat-grey.png';
+      if (!isSelected) return 'assets/seat-grey.png';
     }
 
     let seatTypePath = '';
@@ -152,9 +140,5 @@ export class SeatingChart implements OnInit, OnChanges {
     }
 
     return isSelected ? 'assets/seat-yellow.png' : seatTypePath;
-  }
-
-  viewOnlyGetImagePath(): string {
-    return 'assets/seat-grey.png';
   }
 }

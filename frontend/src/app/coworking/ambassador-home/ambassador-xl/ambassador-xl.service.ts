@@ -27,6 +27,8 @@ export class AmbassadorXlService {
       .subscribe((reservations) => {
         this.reservations.set(reservations.map(parseReservationJSON));
       });
+
+    console.log('Reservations: ', this.reservations);
   }
 
   checkIn(reservation: Reservation): void {

@@ -38,7 +38,6 @@
                 [seat_availability]="
                   room.id === 'SN156' ? status.seat_availability : this.seats
                 "
-                [viewOnly]="false"
                 [update_selected_seats]="selectedSeats"
                 (seatsSelected)="seatsSelected($event)"></seating-chart>
             </ng-container>
@@ -52,6 +51,7 @@
                 [seat_availability]="
                   room.id === 'SN156' ? status.seat_availability : this.seats
                 "
+                [update_selected_seats]="selectedSeats"
                 [selection_limit]="2"
                 (seatsSelected)="seatsSelected($event)"></seating-chart>
             </ng-container>
@@ -64,23 +64,33 @@
           <div class="legend-items">
             <!-- Manually defined legend items -->
             <div class="legend-item">
-              <span class="legend-color" style="background-color: #9FFFA9;"></span>
+              <span
+                class="legend-color"
+                style="background-color: #9fffa9"></span>
               <span class="legend-text">Sitting Desk with Monitor</span>
             </div>
             <div class="legend-item">
-              <span class="legend-color" style="background-color: #9FA6FF;"></span>
+              <span
+                class="legend-color"
+                style="background-color: #9fa6ff"></span>
               <span class="legend-text">Standing Desk with Monitor</span>
             </div>
             <div class="legend-item">
-              <span class="legend-color" style="background-color: #FF9BA5;"></span>
+              <span
+                class="legend-color"
+                style="background-color: #ff9ba5"></span>
               <span class="legend-text">Communal Area Seats</span>
             </div>
             <div class="legend-item">
-              <span class="legend-color" style="background-color: #FFC700;"></span>
+              <span
+                class="legend-color"
+                style="background-color: #ffc700"></span>
               <span class="legend-text">Selected Seats</span>
             </div>
             <div class="legend-item">
-              <span class="legend-color" style="background-color: #CCCCCC;"></span>
+              <span
+                class="legend-color"
+                style="background-color: #cccccc"></span>
               <span class="legend-text">Unavailable Seats</span>
             </div>
           </div>

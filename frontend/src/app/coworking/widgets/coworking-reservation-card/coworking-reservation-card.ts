@@ -6,10 +6,11 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
+  CoworkingStatus,
   Reservation,
   SeatAvailability
 } from 'src/app/coworking/coworking.models';
-import { Observable, ObservableLike, map, timer } from 'rxjs';
+import { Observable, map, take, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { RoomReservationService } from '../../room-reservation/room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,6 +18,7 @@ import { CoworkingService } from '../../coworking.service';
 import { AcademicsService } from '../../../academics/academics.service';
 import { Room } from 'src/app/academics/academics.models';
 import { SeatInterface } from 'src/app/admin/room/seat';
+import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 
 @Component({
   selector: 'coworking-reservation-card',
@@ -31,8 +33,11 @@ export class CoworkingReservationCard implements OnInit {
   @Output() reloadCoworkingHome = new EventEmitter<void>();
 
   public room$!: Observable<Room>;
-  public filteredSeats: SeatInterface[] = [];
+  public status$: Observable<CoworkingStatus>;
+
+  public updatedSeats: SeatAvailability[] = [];
   public seatAvailabilities: SeatAvailability[] = [];
+
   public draftConfirmationDeadline$!: Observable<string>;
   isCancelExpanded$: Observable<boolean>;
 
@@ -45,6 +50,7 @@ export class CoworkingReservationCard implements OnInit {
   ) {
     this.isCancelExpanded$ =
       this.coworkingService.isCancelExpanded.asObservable();
+    this.status$ = coworkingService.status$;
   }
 
   /**
@@ -58,8 +64,47 @@ export class CoworkingReservationCard implements OnInit {
   ngOnInit(): void {
     this.draftConfirmationDeadline$ = this.initDraftConfirmationDeadline();
 
-    if (this.reservation.room && this.reservation.room.id) {
+    this.status$ = this.coworkingService.status$;
+
+    if (this.reservation.room?.id) {
       this.room$ = this.academicsService.getRoom(this.reservation.room.id);
+      this.room$.subscribe((room) => {
+        room.seats?.forEach((seat) => {
+          this.seatAvailabilities.push(
+            Object.assign({}, seat, { availability: [] })
+          );
+        });
+        this.coworkingService.pollStatus();
+      });
+    } else if (this.reservation.seats && this.reservation.seats.length > 0) {
+      this.academicsService
+        .getSeat(this.reservation.seats[0])
+        .subscribe((seat) => {
+          if (seat.room.id) {
+            this.room$ = this.academicsService.getRoom(seat.room.id);
+            this.room$.subscribe((room) => {
+              this.coworkingService.pollStatus();
+              room.seats?.forEach((seat) => {
+                this.seatAvailabilities.push(
+                  Object.assign({}, seat, { availability: [] })
+                );
+              });
+              this.updatedSeats = this.seatAvailabilities.filter(
+                (seat) =>
+                  this.reservation.seats.findIndex((s) => s.id === seat.id) !==
+                  -1
+              );
+              this.updateWidget();
+            });
+          }
+        });
+    }
+
+    /*
+    if (this.reservation.seats && this.reservation.seats[0].room.id) {
+      this.room$ = this.academicsService.getRoom(
+        this.reservation.seats[0].room.id
+      );
 
       // Subscribe to the room$ observable to log its emitted value
       this.room$.subscribe({
@@ -73,17 +118,7 @@ export class CoworkingReservationCard implements OnInit {
     } else {
       console.log('No room ID available, cannot fetch room');
     }
-
-    this.prepareSeats();
-  }
-
-  private prepareSeats(): void {
-    if (this.reservation && this.reservation.seats) {
-      this.seatAvailabilities = this.reservation.seats.map((seat) => ({
-        ...seat,
-        availability: [] // Initialize with an empty array or fetch actual availability if required
-      }));
-    }
+    */
   }
 
   checkinDeadline(reservationStart: Date): Date {
@@ -216,5 +251,13 @@ export class CoworkingReservationCard implements OnInit {
     return this.isCancelExpanded$.pipe(
       map((isCancelExpanded) => isCancelExpanded || this.checkCheckinAllowed())
     );
+  }
+
+  updateWidget() {
+    timer(50, 100)
+      .pipe(take(1))
+      .subscribe((value) => {
+        this.coworkingService.pollStatus();
+      });
   }
 }

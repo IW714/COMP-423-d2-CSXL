@@ -759,7 +759,6 @@ class ReservationService:
         # For the time being, reservations are limited to one user. As soon as
         # possible, we'd like to add multi-user reservations so that pairs and teams
         # can be simplified.
-
         if len(request.users) > 1:
             raise NotImplementedError("Multi-user reservations not yet supproted.")
 
@@ -808,8 +807,6 @@ class ReservationService:
                 "At least one valid user is required to make a reservation."
             )
 
-        seat_entities = []
-
         # Check for overlapping reservations for a single user
         # if len(user_entities) == 1:
         conflicts = self._get_active_reservations_for_user(request.users[0], bounds)
@@ -827,6 +824,20 @@ class ReservationService:
                     "Users may not have conflicting reservations."
                 )
 
+        # Dead code because of the NotImplementedError testing for multiple users at the top
+        # else:
+        #     # Draft of expected functionality (needs testing and sanity checking)
+        #     # Multiple users all need to not have conflicts
+        #     for user in request.users:
+        #         conflicts = self._get_active_reservations_for_user(user, bounds)
+        #         if len(conflicts) > 0:
+        #             raise ReservationException(
+        #                 "Users may not have conflicting reservations."
+        #             )
+
+        # Look at the seats - match bounds of assigned seat's availability
+        seat_entities = []
+        if request.room is None:
             seats: list[Seat] = SeatEntity.get_models_from_identities(
                 self._session, request.seats
             )
@@ -842,28 +853,21 @@ class ReservationService:
                     "The requested seat(s) are no longer available."
                 )
 
+            # TODO (limit to # of users on request if multiple users)
+            # Here we constrain the reservation start/end to that of the best available seat requested.
+            # This matters as walk-in availability becomes scarce (may start in the near future even though request
+            # start is for right now), alternatively may end early due to reserved seat on backend.
             seat_entities = [
                 self._session.get(SeatEntity, seat_avail.id)
                 for seat_avail in seat_availability
                 if seat_avail.reservable
             ]
             bounds = seat_availability[0].availability[0]
-
-        # Dead code because of the NotImplementedError testing for multiple users at the top
-        # else:
-        #     # Draft of expected functionality (needs testing and sanity checking)
-        #     # Multiple users all need to not have conflicts
-        #     for user in request.users:
-        #         conflicts = self._get_active_reservations_for_user(user, bounds)
-        #         if len(conflicts) > 0:
-        #             raise ReservationException(
-        #                 "Users may not have conflicting reservations."
-        #             )
-
-        # Look at the seats - match bounds of assigned seat's availability
-        # TODO: Fetch all seats
-
-        room_id = request.room.id if request.room else None
+        else:
+            # Prevent double booking a room
+            conflicts = self._fetch_conflicting_room_reservations(request)
+            if len(conflicts) > 0:
+                raise ReservationException("The requested room is no longer available.")
 
         draft = ReservationEntity(
             state=ReservationState.DRAFT,

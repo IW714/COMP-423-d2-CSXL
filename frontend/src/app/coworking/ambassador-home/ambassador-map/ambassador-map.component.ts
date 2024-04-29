@@ -66,6 +66,7 @@ export class AmbassadorMapComponent implements OnInit {
       .pipe(
         map((reservations) =>
           reservations.filter((r) => {
+            console.log(r);
             if (r.state !== 'CHECKED_OUT')
               return (
                 r.seats.filter((s) => s.id === seatSelection[0].id).length > 0

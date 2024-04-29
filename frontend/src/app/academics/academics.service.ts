@@ -13,6 +13,7 @@ import { AuthenticationService } from '../authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { Course, Room, Section, Term } from './academics.models';
+import { Seat, SeatInterface } from '../admin/room/seat';
 
 @Injectable({
   providedIn: 'root'
@@ -186,5 +187,13 @@ export class AcademicsService {
    */
   deleteRoom(room: Room) {
     return this.http.delete(`/api/academics/room/${room.id}`);
+  }
+
+  /** Retrieve a seat.
+   * @param seat: seat to retrieve
+   * @returns {Observable<Seat>}
+   */
+  getSeat(seat: SeatInterface): Observable<Seat> {
+    return this.http.get<Seat>(`/api/seat/${seat.id}`);
   }
 }
