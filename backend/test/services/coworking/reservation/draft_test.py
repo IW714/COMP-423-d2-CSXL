@@ -115,7 +115,6 @@ def test_draft_reservation_some_taken_seats(reservation_svc: ReservationService)
     assert reservation.seats[1].id == seat_data.monitor_seat_01.id
 
 
-
 def test_draft_reservation_seat_availability_truncated(
     reservation_svc: ReservationService,
 ):
@@ -135,8 +134,8 @@ def test_draft_reservation_seat_availability_truncated(
         ),
     )
     assert_equal_times(reservation_data.reservation_4.start, reservation.end)
-    # added 2 more reservable seats to the data, so neeeds to assert there are 4 seats
-    assert len(reservation.seats) == 4
+    # there are 16 total seats in seat_data, so needs to assert there are 16 seats
+    assert len(reservation.seats) == len(seat_data.seats)
 
 
 def test_draft_reservation_future(reservation_svc: ReservationService):

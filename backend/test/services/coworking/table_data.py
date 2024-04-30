@@ -20,99 +20,217 @@ __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
 demo_table_00 = NewTableDetails(
-    id = 0,
-    x = 80.0,
-    y = 80.0,
-    width = 10.0,
-    height = 50.0,
-    rotation = 45,
+    id=0,
+    x=8,
+    y=8,
+    width=75.0,
+    height=20.0,
+    rotation=0,
     radius=0,
     is_circle=False,
-    room=the_xl.to_room()
+    room=the_xl.to_room(),
 )
 
 demo_table_01 = NewTableDetails(
-    # Square Table
-    id = 1,
-    x = 100.0,
-    y = 100.0,
-    width = 50.0,
-    height = 50.0,
-    rotation = 0,
+    id=1,
+    x=87,
+    y=8,
+    width=75.0,
+    height=20.0,
+    rotation=0,
     radius=None,
     is_circle=False,
-    room=the_xl.to_room()
+    room=the_xl.to_room(),
 )
 
 demo_table_10 = NewTableDetails(
     # Circle Table
-    id = 2,
-    x = 250.0,
-    y = 250.0,
-    width = 0.0,
-    height = 0.0,
-    rotation = 0,
-    radius=10,
+    id=2,
+    x=190,
+    y=200,
+    width=40.0,
+    height=40.0,
+    rotation=0,
+    radius=20,
     is_circle=True,
-    room=the_xl.to_room()
+    room=the_xl.to_room(),
 )
 
 demo_table_11 = NewTableDetails(
-    # Rectangle Table
-    id = 3,
-    x = 125.0,
-    y = 175.0,
-    width = 20.0,
-    height = 50.0,
-    rotation = 0,
+    # Circle Table
+    id=3,
+    x=250,
+    y=255,
+    width=40.0,
+    height=40.0,
+    rotation=0,
+    radius=20,
+    is_circle=True,
+    room=the_xl.to_room(),
+)
+
+demo_table_100 = NewTableDetails(
+    # Circle Table
+    id=4,
+    x=283,
+    y=168,
+    width=40.0,
+    height=40.0,
+    rotation=0,
+    radius=20,
+    is_circle=True,
+    room=the_xl.to_room(),
+)
+
+demo_table_101 = NewTableDetails(
+    id=5,
+    x=8,
+    y=143,
+    width=75.0,
+    height=20.0,
+    rotation=0,
     radius=0,
     is_circle=False,
-    room=the_xl.to_room()
+    room=the_xl.to_room(),
+)
+
+demo_table_110 = NewTableDetails(
+    id=6,
+    x=87,
+    y=143,
+    width=75.0,
+    height=20.0,
+    rotation=0,
+    radius=None,
+    is_circle=False,
+    room=the_xl.to_room(),
+)
+
+demo_table_111 = NewTableDetails(
+    id=7,
+    x=8,
+    y=170,
+    width=75.0,
+    height=20.0,
+    rotation=0,
+    radius=0,
+    is_circle=False,
+    room=the_xl.to_room(),
+)
+
+demo_table_1000 = NewTableDetails(
+    id=8,
+    x=87,
+    y=170,
+    width=75.0,
+    height=20.0,
+    rotation=0,
+    radius=None,
+    is_circle=False,
+    room=the_xl.to_room(),
+)
+
+demo_table_1001 = NewTableDetails(
+    id=9,
+    x=8,
+    y=282,
+    width=75.0,
+    height=20.0,
+    rotation=0,
+    radius=0,
+    is_circle=False,
+    room=the_xl.to_room(),
+)
+
+demo_table_1010 = NewTableDetails(
+    id=10,
+    x=87,
+    y=282,
+    width=75.0,
+    height=20.0,
+    rotation=0,
+    radius=None,
+    is_circle=False,
+    room=the_xl.to_room(),
+)
+
+demo_table_1011 = NewTableDetails(
+    id=11,
+    x=208,
+    y=40,
+    width=40,
+    height=40,
+    rotation=0,
+    radius=0,
+    is_circle=False,
+    room=the_xl.to_room(),
+)
+
+demo_table_1100 = NewTableDetails(
+    id=12,
+    x=300,
+    y=40,
+    width=44,
+    height=67,
+    rotation=0,
+    radius=None,
+    is_circle=False,
+    room=the_xl.to_room(),
 )
 
 new_table = NewTableDetails(
-    id = 100,
-    x = 0.0,
-    y = 0.0,
-    width = 0.0,
-    height = 0.0,
-    rotation = 0,
+    id=100,
+    x=0.0,
+    y=0.0,
+    width=0.0,
+    height=0.0,
+    rotation=0,
     radius=0,
     is_circle=False,
-    room=the_xl.to_room()
+    room=the_xl.to_room(),
 )
 
 new_table_bad_room = NewTableDetails(
-    id = 100,
-    x = 0.0,
-    y = 0.0,
-    width = 0.0,
-    height = 0.0,
-    rotation = 0,
+    id=100,
+    x=0.0,
+    y=0.0,
+    width=0.0,
+    height=0.0,
+    rotation=0,
     radius=0,
     is_circle=False,
-    room= Room(
-        id="SN10000",
-        nickname=""
-    ),
+    room=Room(id="SN10000", nickname=""),
 )
 
 edited_demo_table_00 = NewTableDetails(
-    id = 0,
-    x = 0.0,
-    y = 0.0,
-    width = 0.0,
-    height = 0.0,
-    rotation = 0,
+    id=0,
+    x=0.0,
+    y=0.0,
+    width=0.0,
+    height=0.0,
+    rotation=0,
     radius=0,
     is_circle=False,
-    room=the_xl.to_room()
+    room=the_xl.to_room(),
 )
 
 
-demo_tables = [demo_table_00, demo_table_10, demo_table_01, demo_table_11]
+demo_tables = [
+    demo_table_00,
+    demo_table_10,
+    demo_table_01,
+    demo_table_11,
+    demo_table_100,
+    demo_table_101,
+    demo_table_110,
+    demo_table_111,
+    demo_table_1000,
+    demo_table_1001,
+    demo_table_1010,
+    demo_table_1011,
+    demo_table_1100,
+]
 tables: Sequence[Table] = demo_tables  # + common_area_tables + conference_table_tables
-
 
 
 def insert_fake_data(session: Session):

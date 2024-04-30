@@ -104,7 +104,7 @@ def test_seat_availability_with_reservation(
         seat_data.reservable_seats, today
     )
     assert len(available_seats) == len(seat_data.reservable_seats) - 1
-    assert available_seats[0].id == seat_data.monitor_seat_10.id
+    assert available_seats[0].id == seat_data.monitor_seat_01.id
 
 
 def test_seat_availability_near_requested_start(reservation_svc: ReservationService):
