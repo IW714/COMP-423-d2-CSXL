@@ -11,7 +11,9 @@
   </mat-card-header>
 
   <mat-card-content>
-    <room-reservation-table class="horizontal-scroll"></room-reservation-table>
+    <room-reservation-table
+      [room]="room"
+      class="horizontal-scroll"></room-reservation-table>
 
     <div class="legend-container">
       <div class="legend-item">

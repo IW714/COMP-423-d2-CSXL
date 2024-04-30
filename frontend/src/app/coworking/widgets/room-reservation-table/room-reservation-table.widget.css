@@ -11,6 +11,7 @@ table {
   width: 99%;
   margin-left: 10px;
   white-space: nowrap; /* Prevent line breaks for child elements */
+  margin-bottom: 10px;
 }
 
 th,

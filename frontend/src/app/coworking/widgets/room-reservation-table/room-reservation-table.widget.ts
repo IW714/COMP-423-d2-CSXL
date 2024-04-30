@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ReservationTableService } from '../../room-reservation/reservation-table.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -21,6 +21,8 @@ import { Room } from 'src/app/academics/academics.models';
   styleUrls: ['./room-reservation-table.widget.css']
 })
 export class RoomReservationWidgetComponent {
+  @Input() room?: Room;
+
   timeSlots: string[] = [];
 
   //- Reservations Map

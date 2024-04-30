@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Reservation } from 'src/app/coworking/coworking.models';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
@@ -12,6 +12,7 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { catchError, Observable, of } from 'rxjs';
 import { RoomReservationService } from '../room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Room } from 'src/app/academics/academics.models';
 
 @Component({
   selector: 'app-new-reservation-page',
@@ -26,6 +27,8 @@ export class NewReservationPageComponent implements OnInit {
     canActivate: [isAuthenticated],
     resolve: { profile: profileResolver }
   };
+
+  @Input() room?: Room;
 
   public upcomingRoomReservations$!: Observable<Reservation[]>;
   public numHoursStudyRoomReservations$!: Observable<string>;

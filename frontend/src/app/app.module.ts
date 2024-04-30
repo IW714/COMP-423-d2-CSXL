@@ -29,6 +29,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 /* Application Specific */
 import { AppRoutingModule } from './app-routing.module';
@@ -80,6 +82,8 @@ import { AmbassadorMapComponent } from './coworking/ambassador-home/ambassador-m
     MatToolbarModule,
     MatTooltipModule,
     MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     FormsModule,
     RouterModule,
     SharedModule,

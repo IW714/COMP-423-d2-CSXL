@@ -1,5 +1,5 @@
 <div class="seat-selection-flex-box">
-  <div class="seat-selection-card-container">
+  <div class="seat-selection-card-container" *ngIf="room.id === 'SN156'">
     <mat-card class="seat-selection-card" appearance="outlined">
       <mat-card-title class="mat-card-title">Seats Selection</mat-card-title>
       <mat-divider class="divider"></mat-divider>
@@ -23,6 +23,9 @@
       </mat-card-content>
     </mat-card>
   </div>
+  <app-new-reservation-page
+    *ngIf="room.id !== 'SN156'"
+    [room]="room"></app-new-reservation-page>
   <div class="seating-chart-container">
     <mat-card appearance="outlined">
       <mat-card-content>
@@ -32,29 +35,25 @@
             else elseBlock
           ">
           <ng-container *ngIf="status$ | async as status">
-            <ng-container *ngIf="room as room">
-              <seating-chart
-                [room]="room"
-                [seat_availability]="
-                  room.id === 'SN156' ? status.seat_availability : this.seats
-                "
-                [update_selected_seats]="selectedSeats"
-                (seatsSelected)="seatsSelected($event)"></seating-chart>
-            </ng-container>
+            <seating-chart
+              [room]="room"
+              [seat_availability]="
+                room.id === 'SN156' ? status.seat_availability : this.seats
+              "
+              [update_selected_seats]="selectedSeats"
+              (seatsSelected)="seatsSelected($event)"></seating-chart>
           </ng-container>
         </ng-container>
         <ng-template #elseBlock>
           <ng-container *ngIf="status$ | async as status">
-            <ng-container *ngIf="room as room">
-              <seating-chart
-                [room]="room"
-                [seat_availability]="
-                  room.id === 'SN156' ? status.seat_availability : this.seats
-                "
-                [update_selected_seats]="selectedSeats"
-                [selection_limit]="2"
-                (seatsSelected)="seatsSelected($event)"></seating-chart>
-            </ng-container>
+            <seating-chart
+              [room]="room"
+              [seat_availability]="
+                room.id === 'SN156' ? status.seat_availability : this.seats
+              "
+              [update_selected_seats]="selectedSeats"
+              [selection_limit]="2"
+              (seatsSelected)="seatsSelected($event)"></seating-chart>
           </ng-container>
         </ng-template>
       </mat-card-content>
