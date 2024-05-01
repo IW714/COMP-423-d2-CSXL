@@ -8,7 +8,10 @@ import { MatCardModule } from '@angular/material/card';
 import { CoworkingReservationCard } from './widgets/coworking-reservation-card/coworking-reservation-card';
 import { CoworkingDropInCard } from './widgets/dropin-availability-card/dropin-availability-card.widget';
 import { MatListModule } from '@angular/material/list';
-import { CoworkingHoursCard } from './widgets/operating-hours-panel/operating-hours-panel.widget';
+import {
+  CoworkingHoursCard,
+  OperatingHoursCapitalizationPipe
+} from './widgets/operating-hours-panel/operating-hours-panel.widget';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { ReservationComponent } from './reservation/reservation.component';
@@ -49,7 +52,11 @@ import { RoomSelectionComponent } from './room-selection/room-selection.componen
     NewReservationPageComponent,
     DateSelector,
     OperatingHoursDialog,
+<<<<<<< HEAD
     RoomSelectionComponent
+=======
+    OperatingHoursCapitalizationPipe
+>>>>>>> 05a5327125286a055bb2e2602855e23fa9ca7452
   ],
   imports: [
     CommonModule,
