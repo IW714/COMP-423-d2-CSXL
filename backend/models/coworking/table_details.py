@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from .table import Table, NewTable
-from .. import Room
+from backend.models.room import Room
 
 
 class TableDetails(Table, BaseModel):
