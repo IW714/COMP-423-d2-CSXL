@@ -52,11 +52,8 @@ import { RoomSelectionComponent } from './room-selection/room-selection.componen
     NewReservationPageComponent,
     DateSelector,
     OperatingHoursDialog,
-<<<<<<< HEAD
-    RoomSelectionComponent
-=======
+    RoomSelectionComponent,
     OperatingHoursCapitalizationPipe
->>>>>>> 05a5327125286a055bb2e2602855e23fa9ca7452
   ],
   imports: [
     CommonModule,
