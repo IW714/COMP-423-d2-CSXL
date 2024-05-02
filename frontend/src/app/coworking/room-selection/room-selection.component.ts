@@ -11,7 +11,11 @@ import { Room } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
 import { profileResolver } from 'src/app/profile/profile.resolver';
-import { CoworkingStatus, SeatAvailability } from '../coworking.models';
+import {
+  CoworkingStatus,
+  SeatAvailability,
+  parseSeatAvailabilityJSON
+} from '../coworking.models';
 import { roomResolver } from 'src/app/academics/academics.resolver';
 import { Profile, PublicProfile } from 'src/app/profile/profile.service';
 import { CoworkingService } from '../coworking.service';
@@ -162,5 +166,16 @@ export class RoomSelectionComponent implements OnInit {
         this.update = false;
         this.coworkingService.pollStatus();
       });
+  }
+
+  updateSeatAvailabilities(
+    seatAvailabilities: SeatAvailability[]
+  ): SeatAvailability[] {
+    this.seats.forEach((seat) => {
+      if (seatAvailabilities.findIndex((s) => s.id === seat.id) === -1) {
+        seatAvailabilities.push(Object.assign({}, seat, { availability: [] }));
+      }
+    });
+    return seatAvailabilities;
   }
 }
