@@ -3,7 +3,7 @@
 from pydantic import BaseModel
 
 from .seat import Seat, NewSeat
-from .. import Room
+from backend.models.room import Room
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
