@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Profile, ProfileService } from '../profile/profile.service';
 
@@ -13,7 +13,8 @@ export class AdminComponent {
   public links = [
     { label: 'Users', path: '/admin/users' },
     { label: 'Roles', path: '/admin/roles' },
-    { label: 'Rooms', path: '/admin/room' }
+    { label: 'Rooms', path: '/admin/room' },
+    { label: 'Organizations', path: '/admin/organizations' }
   ];
 
   constructor(public profileService: ProfileService) {
