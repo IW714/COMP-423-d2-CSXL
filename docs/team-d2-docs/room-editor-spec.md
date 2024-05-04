@@ -30,28 +30,27 @@ The Floor Plan Editor allows for detailed management of seats within rooms. User
 - **User Experience:** The seat is removed from the layout immediately.
 
 ## Technical Implementation of Seat Operations
-#### Backend
+### Backend
 The backend services for seat and table operations are implemented using FastAPI. It manages interactions with a PostgreSQL database through SQLAlchemy ORM for CRUD operations. Key API endpoints include:
 - `GET /api/seat`: Retrieves all seats.
 - `POST /api/seat`: Creates a new seat.
 - `PUT /api/seat`: Updates an existing seat.
 - `DELETE /api/seat/{id}`: Deletes a seat by ID.
-
 - `GET /api/table`: Retrieves all tables.
 - `POST /api/table`: Creates a new table.
 - `PUT /api/table`: Updates an existing table.
 - `DELETE /api/table/{id}`: Deletes a table by ID.
 
-#### Frontend
+### Frontend
 The frontend is implemented using Angular and interacts with the backend via RESTful APIs.
 
-#### RoomLayoutEditor Component
+#### Room Layout Editor Component
 The `RoomLayoutEditorComponent` handles the rendering and interactive logic for seats and tables within the editor. It uses observables to react to data changes and update the UI accordingly, providing a seamless user experience.
 
-#### RoomEditor Component
+#### Room Editor Component
 The `RoomEditorComponent` handles the submission of the room-editor form and floor plan. It also handles room dimensions and buttons for creating seats and tables.
 
-#### RoomItem
+#### Room Item
 The `RoomItem` class serves as a hub for handling the movement, resizing, and rotation of RoomItems, as well as an implementation of the RoomItemInterface class. The movement, resizing, and rotation functionality has been moved out of the `RoomItemService` and into this class to provide better modularity.
 
 #### Seat
@@ -60,7 +59,10 @@ Acts as an extension of the `RoomItem` class and implements the `SeatInterface`.
 #### Table
 Acts as an extension of the `RoomItem` class and implements the `TableInterface`.
 
-#### RoomItem Service
+#### Alignment Line
+Encapsulates all data related to an alignment line inside of this class.
+
+#### Room Item Service
 The `RoomItemService` is the foundation of the Floor Plan Editor. The service handles all interactions between the editor and the backend, specifically CRUD operations with the backend. The service also delegates all transformations of seats and tables in the frontend to the RoomItem class. It is quite an extensive file and should be simplified as much as possible.
 
 ## Best Practices
@@ -69,7 +71,7 @@ The `RoomItemService` is the foundation of the Floor Plan Editor. The service ha
 - Coordinate with other admins to ensure consistency in room and seat management.
 
 ## Limitations
-- Generally the editor suffers from a slight degree of coupling between the Room-Item-Service and the Seat, Table, and RoomItem classes. Due to how the updateLines() method works along with a couple others, the Room-Item-Service must be injected into some of the classes' methods in order to properly work.
+- Generally, the editor suffers from a slight degree of coupling between the Room-Item-Service and the Seat, Table, and RoomItem classes. Due to how the updateLines() method works along with a couple others, the Room-Item-Service must be injected into some of the classes' methods in order to properly work.
 - We were unable to implement individual Seat and Table widgets to replace the code in the `RoomLayoutEditor.html` file. If possible, future developers should find a way to do this.
 
 ## Troubleshooting

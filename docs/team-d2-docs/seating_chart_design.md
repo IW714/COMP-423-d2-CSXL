@@ -127,3 +127,8 @@ On this map, Rhonda will also be able to click on a seat and edit it via the new
  - Only ambassadors and administrators can edit reservations and see
    which user reserved the seat on the widget.
  - Only administrators can edit rooms and seats.
+
+ ## Other Documents
+
+ - [Seating Chart Technical Specifications](/docs/team-d2-docs/seating-chart-spec.md)
+ - [Room Editor Technical Specifications](/docs/team-d2-docs/room-editor.md)
