@@ -1,5 +1,6 @@
 .seat-selection-flex-box {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row; /* Ensures children are laid out in a row */
     width: 100%; /* Fill the available width */
     min-width: 640px;
@@ -79,7 +80,6 @@
   display: inline;
 }
 
-
 @media (max-width: 1400px) {
 
   .seat-selection-flex-box {
@@ -108,4 +108,4 @@
     .seating-chart {
       padding: 24px 24px 0px 24px !important;
     }
-  }
+}
